@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0b1a">
+<meta name="theme-color" content="#0c0a1d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Power Up">
+<meta name="apple-mobile-web-app-title" content="Train9">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
-<title>Power Up</title>
+<title>Train9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -25,7 +25,7 @@
 html{background:var(--bg)}
 body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.5 var(--fb);-webkit-text-size-adjust:100%;
   background:radial-gradient(120% 60% at 50% -10%,#3b1f7a 0%,rgba(59,31,122,0) 60%),radial-gradient(80% 50% at 100% 30%,rgba(255,138,61,.10),transparent 60%),var(--bg);background-attachment:fixed}
-.wrap{max-width:760px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(100px + env(safe-area-inset-bottom))}
+.wrap{max-width:760px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(110px + env(safe-area-inset-bottom))}
 h1,h2,h3{font-family:var(--fd);letter-spacing:.02em;line-height:1.05;margin:0;text-wrap:balance}
 h1{font-size:30px;font-weight:800;text-transform:uppercase}
 h2{font-size:21px;font-weight:800;margin:24px 0 10px;text-transform:uppercase;font-style:italic;letter-spacing:.05em;color:var(--ink2)}
@@ -176,13 +176,111 @@ dialog::backdrop{background:rgba(5,4,20,.75)}
 .pop{animation:pop .7s var(--ease) both}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+
+/* ===== Train9 friendly glass theme ===== */
+:root{--bg:#0c0a1d;--panel:rgba(255,255,255,.065);--panel2:rgba(255,255,255,.085);--ink:#f5f3ff;--ink2:#bdb6de;--line:rgba(255,255,255,.13);--soft:rgba(255,255,255,.08);
+  --a:#a855f7;--a2:#e9b8ff;--pk:#f472b6;--p:#8b5cf6;--p2:#c4b5fd;--on:#ffffff;--r:24px}
+body{background:radial-gradient(circle at 12% 8%,rgba(168,85,247,.42),transparent 42%),radial-gradient(circle at 92% 28%,rgba(244,114,182,.22),transparent 40%),radial-gradient(circle at 25% 92%,rgba(56,189,248,.18),transparent 45%),#0c0a1d;background-attachment:fixed}
+.card,.hero,details.card{background:var(--panel);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border:1px solid var(--line);border-radius:var(--r);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 12px 32px rgba(5,2,20,.35);padding:16px}
+.hero{background:linear-gradient(140deg,rgba(168,85,247,.32),rgba(255,255,255,.05) 60%)}
+h2{font-style:normal;text-transform:none;letter-spacing:.01em;color:var(--ink);font-size:22px}
+h3{font-size:21px}
+.brandw{display:flex;align-items:center;gap:10px}
+.logo{width:40px;height:40px;border-radius:12px;box-shadow:0 0 18px rgba(168,85,247,.6)}
+.brand{font:800 26px var(--fd);letter-spacing:.04em;text-transform:none;font-style:normal;background:linear-gradient(90deg,#fff,var(--a2) 60%,var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hello{font-size:17px;color:var(--ink2);margin:2px 4px 10px}
+.kicker{color:var(--a2);letter-spacing:.12em}
+.rk{font-style:normal;font-size:30px}
+button,.btn{border-radius:16px;background:var(--soft);border-color:var(--line)}
+button.soft{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);min-height:40px;padding:8px 14px;border-radius:999px}
+button.acc,.btn.acc{background:linear-gradient(135deg,#c084fc,#a855f7 45%,#ec4899);color:#fff;border:0;box-shadow:0 8px 24px rgba(168,85,247,.45)}
+button.pri{background:#fff;color:#1a1033;border-color:#fff}
+button.big{border-radius:18px;text-transform:none;letter-spacing:.03em;font-size:20px}
+.wide{width:100%;margin-top:12px}
+input,select,textarea{background:rgba(0,0,0,.25);border-color:var(--line);border-radius:12px}
+.chip{background:rgba(255,255,255,.1);border-color:var(--line)}
+.chip.A{background:linear-gradient(135deg,#c084fc,#a855f7);color:#fff;border:0}.chip.B{background:linear-gradient(135deg,#5eead4,#14b8a6);color:#04211d;border:0}.chip.C{background:linear-gradient(135deg,#f9a8d4,#ec4899);color:#fff;border:0}
+#wkchip{background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.gear{background:rgba(255,255,255,.08)}
+nav.tabs{background:rgba(18,12,40,.6);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border-top:1px solid var(--line);margin:0 10px calc(10px + env(safe-area-inset-bottom));border:1px solid var(--line);border-radius:24px;padding-bottom:0;left:0;right:0;bottom:0}
+nav.tabs button{text-transform:none;letter-spacing:.02em;font:700 12px var(--fb);border-radius:20px;margin:6px 2px;min-height:50px}
+nav.tabs button[aria-selected=true]{color:#fff;box-shadow:none;background:linear-gradient(135deg,rgba(192,132,252,.45),rgba(236,72,153,.35))}
+.rpbar,.xpbar{background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:999px}
+.rpbar i{background:linear-gradient(90deg,#a855f7,#ec4899,#fbbf24);box-shadow:0 0 14px rgba(236,72,153,.7);border-radius:999px;transition:width 1.6s cubic-bezier(.23,1,.32,1)}
+.xpbar i{background:linear-gradient(90deg,#60a5fa,#c4b5fd);border-radius:999px;transition:width 1.6s cubic-bezier(.23,1,.32,1) .3s}
+.rpbar.big{height:18px}.xpbar.big{height:12px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pill{padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid var(--line);font:600 13px var(--fb)}
+.banner{border-radius:18px;background:rgba(236,72,153,.14);border:1px solid rgba(236,72,153,.4)}
+.mission{border-color:rgba(192,132,252,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 40px rgba(168,85,247,.18)}
+.quest{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;margin:8px 0;padding:10px 12px}
+.quest:last-of-type{border-bottom:1px solid var(--line)}
+.quest.done{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.35)}
+.qc{border-radius:50%}
+.qx{color:var(--a2);font:700 13px var(--fb)}
+.rings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.ring{aspect-ratio:1;max-width:150px;margin:0 auto;width:100%;border-radius:50%;display:grid;place-content:center;text-align:center;
+  background:radial-gradient(closest-side,#1a1236 76%,transparent 77% 100%),conic-gradient(#a855f7 calc(var(--v)*1%),rgba(255,255,255,.1) 0)}
+.ring.p{background:radial-gradient(closest-side,#1a1236 76%,transparent 77% 100%),conic-gradient(#ec4899 calc(var(--v)*1%),rgba(255,255,255,.1) 0)}
+.ring b{font:800 24px var(--fd)}.ring span{font-size:12px;color:var(--ink2);padding:0 14px}
+details.more summary{font-weight:700}
+.figbox{border-radius:18px;background:radial-gradient(circle at 50% 30%,rgba(168,85,247,.35),rgba(20,12,45,.8))}
+.fig .hl{stroke:#e879f9}
+.style{border-radius:20px;background:var(--panel);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.style[aria-pressed=true]{border-color:#c084fc;box-shadow:0 0 0 1px #c084fc,0 0 26px rgba(168,85,247,.35)}
+.msg.u{background:linear-gradient(135deg,#a855f7,#ec4899)}
+.msg.c{background:var(--panel2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.flag{background:rgba(255,255,255,.05);border-radius:16px}
+dialog{background:rgba(24,16,52,.82);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-radius:28px}
+.lb.you{background:rgba(168,85,247,.18);border-color:rgba(192,132,252,.6)}
+.rung.cur{background:rgba(168,85,247,.2);border-color:#c084fc}
+.stat{background:rgba(255,255,255,.05);border-radius:16px}
+/* review */
+.lvwrap{margin:12px 0}
+.lvrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-weight:600}
+.lvrow b{font:800 22px var(--fd)}
+.xpc{color:#93c5fd}
+.rv{margin-top:14px;border-radius:20px;padding:12px;border:1px solid var(--line)}
+.rv.ok{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3)}
+.rv.bad{background:rgba(251,113,133,.08);border-color:rgba(251,113,133,.3)}
+.rv.nx{background:rgba(147,197,253,.08);border-color:rgba(147,197,253,.3)}
+.rvh{font:800 17px var(--fd);letter-spacing:.04em;margin-bottom:4px}
+.rv.ok .rvh{color:var(--ok)}.rv.bad .rvh{color:var(--bad)}.rv.nx .rvh{color:#93c5fd}
+.rvi summary{list-style:none;padding:7px 0;font-size:15px;line-height:1.4;min-height:0}
+.rvi summary::-webkit-details-marker{display:none}
+.rvi summary::before{content:"\2022  ";color:var(--ink2)}
+.rve{font-size:13px;color:var(--ink2);padding:0 0 8px 12px}
+.rplines{margin-top:8px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+/* celebration */
+.cele{position:fixed;inset:0;z-index:200;display:grid;place-items:center;overflow:hidden;cursor:pointer;
+  background:radial-gradient(circle at 50% 42%,rgba(168,85,247,.55),rgba(12,10,29,.92) 60%);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  opacity:0;transform:scale(1.04);transition:opacity .45s ease-out,transform .6s cubic-bezier(.23,1,.32,1)}
+.cele.in{opacity:1;transform:none}
+.cele.out{opacity:0;transform:translateY(-105%);transition:transform .65s cubic-bezier(.7,0,.84,0),opacity .65s ease-in}
+.cele canvas{position:absolute;inset:0;pointer-events:none}
+.cele .rays{position:absolute;left:50%;top:42%;width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;pointer-events:none;opacity:.35;
+  background:repeating-conic-gradient(from 0deg,rgba(233,184,255,.5) 0 6deg,transparent 6deg 18deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 55%);mask:radial-gradient(circle,#000 0,transparent 55%);animation:spin 14s linear infinite}
+.cele.loss .rays{opacity:.08}
+.cele.rankup{background:radial-gradient(circle at 50% 42%,rgba(251,191,36,.35),rgba(168,85,247,.5) 35%,rgba(12,10,29,.94) 70%)}
+.cbox{position:relative;text-align:center;padding:20px}
+.ctitle{font:800 italic 46px var(--fd);letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(90deg,#fde68a,#f0abfc,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent;animation:slam .7s cubic-bezier(.23,1,.32,1) both;filter:drop-shadow(0 0 18px rgba(240,171,252,.6))}
+.cele.loss .ctitle{background:linear-gradient(90deg,#cbd5e1,#94a3b8);-webkit-background-clip:text;background-clip:text}
+.cbadge{margin:10px auto;display:grid;place-items:center;filter:drop-shadow(0 0 30px rgba(233,184,255,.8));animation:pop .9s cubic-bezier(.23,1,.32,1) .2s both}
+.cbig{font:800 52px var(--fd);color:#fff;text-shadow:0 0 24px rgba(236,72,153,.8);animation:rise .8s cubic-bezier(.23,1,.32,1) .45s both}
+.csub{font-size:18px;color:var(--a2);animation:rise .8s cubic-bezier(.23,1,.32,1) .6s both}
+.ctap{margin-top:22px;font-size:13px;color:var(--ink2);opacity:.8}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slam{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes rise{0%{transform:translateY(24px);opacity:0}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.cele .rays{animation:none}}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <div><div class="brand">Power Up</div><div class="muted small" id="sub"></div></div>
+    <div><div class="brandw"><img src="icon-192.png" alt="" class="logo"><span class="brand">Train9</span></div><div class="muted small" id="sub"></div></div>
     <div class="topr"><button class="chip" id="wkchip" aria-label="Open ranked"></button><button class="gear" id="gear" aria-label="Settings and profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
   </div>
   <main>
@@ -1067,6 +1165,85 @@ function boardRows(){
   return rows;
 }
 
+// ---------- Celebration: particles, light burst and reward sound ----------
+var FX = (function(){
+  var AC=null;
+  function ctx(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){ AC=null; } return AC; }
+  function tone(a, f, t0, dur, type, vol, glideTo){
+    var o=a.createOscillator(), g=a.createGain();
+    o.type=type; o.frequency.setValueAtTime(f,t0); if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo,t0+dur);
+    g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g); g.connect(a._bus); o.start(t0); o.stop(t0+dur+0.05);
+  }
+  function bus(a){ if(a._bus) return; var comp=a.createDynamicsCompressor(), master=a.createGain(); master.gain.value=0.9; comp.connect(master); master.connect(a.destination);
+    // short echo for sparkle
+    var d=a.createDelay(), fb=a.createGain(); d.delayTime.value=0.18; fb.gain.value=0.28; d.connect(fb); fb.connect(d); d.connect(comp);
+    var inG=a.createGain(); inG.connect(comp); inG.connect(d); a._bus=inG; }
+  function whoosh(a,t0,dur){
+    var n=a.createBufferSource(), buf=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), ch=buf.getChannelData(0);
+    for(var i=0;i<ch.length;i++) ch[i]=(Math.random()*2-1)*(1-i/ch.length);
+    var f=a.createBiquadFilter(); f.type="bandpass"; f.frequency.setValueAtTime(400,t0); f.frequency.exponentialRampToValueAtTime(5000,t0+dur); f.Q.value=0.8;
+    var g=a.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.25,t0+dur*0.6); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    n.buffer=buf; n.connect(f); f.connect(g); g.connect(a._bus); n.start(t0);
+  }
+  function play(kind){
+    if(S.profile.sound===false) return;
+    var a=ctx(); if(!a) return; bus(a); var t=a.currentTime+0.03;
+    if(kind==="rankup"){
+      whoosh(a,t,0.7);
+      var notes=[523.25,659.25,783.99,1046.5,1318.5,1568];
+      notes.forEach(function(f,i){ tone(a,f,t+0.55+i*0.085,0.5,"triangle",0.22); tone(a,f*2,t+0.55+i*0.085,0.25,"sine",0.05); });
+      [523.25,659.25,783.99,1046.5].forEach(function(f){ tone(a,f,t+1.15,1.9,"sawtooth",0.035); tone(a,f,t+1.15,1.9,"triangle",0.09); });
+      tone(a,130.8,t+1.15,1.6,"sine",0.25,65);
+      for(var i=0;i<10;i++) tone(a,2093+Math.random()*2000,t+1.3+i*0.07,0.12,"sine",0.04);
+    } else if(kind==="loss"){
+      tone(a,392,t,0.25,"triangle",0.18); tone(a,329.6,t+0.22,0.35,"triangle",0.16);
+    } else {
+      whoosh(a,t,0.45);
+      [659.25,783.99,1046.5,1318.5].forEach(function(f,i){ tone(a,f,t+0.32+i*0.09,0.42,"triangle",0.2); });
+      tone(a,1046.5,t+0.7,1.0,"sine",0.12); tone(a,1568,t+0.7,0.9,"sine",0.05);
+      for(var j=0;j<6;j++) tone(a,2400+Math.random()*1800,t+0.8+j*0.06,0.1,"sine",0.035);
+    }
+  }
+  function buzz(p){ try{ navigator.vibrate&&navigator.vibrate(p); }catch(e){} }
+
+  // opts: { kind:"rankup"|"win"|"loss", title, big, sub, badge (svg html) }
+  function celebrate(opts, done){
+    var reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ov=document.createElement("div"); ov.className="cele "+opts.kind; ov.setAttribute("role","dialog"); ov.setAttribute("aria-label",opts.title);
+    ov.innerHTML='<canvas></canvas><div class="rays"></div><div class="cbox"><div class="ctitle">'+esc(opts.title)+'</div><div class="cbadge">'+(opts.badge||"")+'</div><div class="cbig">'+esc(opts.big)+'</div><div class="csub">'+esc(opts.sub||"")+'</div><div class="ctap">Tap to continue</div></div>';
+    document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add("in"); });
+    play(opts.kind); buzz(opts.kind==="rankup"?[30,60,30,60,120]:opts.kind==="loss"?[60]:[25,40,25]);
+    var cv=ov.querySelector("canvas"), c=cv.getContext("2d"), W, H, dpr=Math.min(2,window.devicePixelRatio||1), parts=[], run=true;
+    function size(){ W=cv.width=innerWidth*dpr; H=cv.height=innerHeight*dpr; cv.style.width=innerWidth+"px"; cv.style.height=innerHeight+"px"; }
+    size();
+    var cols = opts.kind==="loss" ? ["#94a3b8","#64748b"] : ["#c084fc","#a855f7","#f0abfc","#fde68a","#fb923c","#ffffff","#7dd3fc"];
+    function burst(n, x, y, power){ for(var i=0;i<n;i++){ var a=Math.random()*Math.PI*2, v=(Math.random()*0.6+0.4)*power*dpr; parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2*dpr,g:0.12*dpr,r:(Math.random()*4+2)*dpr,c:cols[i%cols.length],rot:Math.random()*6,vr:(Math.random()-.5)*0.3,life:1,shape:Math.random()<0.5?"rect":Math.random()<0.5?"star":"dot"}); } }
+    if(!reduce){
+      var cx=W/2, cy=H*0.42, n=opts.kind==="rankup"?260:opts.kind==="loss"?40:150, pw=opts.kind==="loss"?6:16;
+      setTimeout(function(){ burst(n,cx,cy,pw); }, opts.kind==="rankup"?550:300);
+      if(opts.kind==="rankup"){ setTimeout(function(){ burst(120,W*0.15,H*0.75,13); burst(120,W*0.85,H*0.75,13); },1250); setTimeout(function(){ burst(160,cx,cy,18); },2200); }
+    }
+    function star(x,y,r){ c.beginPath(); for(var i=0;i<10;i++){ var rr=i%2?r*0.45:r, a=i*Math.PI/5-Math.PI/2; c.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr); } c.closePath(); c.fill(); }
+    function frame(){
+      if(!run) return; c.clearRect(0,0,W,H);
+      for(var i=parts.length-1;i>=0;i--){ var p=parts[i]; p.vx*=0.985; p.vy=p.vy*0.985+p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life-=0.006;
+        if(p.life<=0||p.y>H+40){ parts.splice(i,1); continue; }
+        c.globalAlpha=Math.min(1,p.life*1.5); c.fillStyle=p.c; c.save(); c.translate(p.x,p.y); c.rotate(p.rot);
+        if(p.shape==="rect") c.fillRect(-p.r,-p.r*0.5,p.r*2,p.r); else if(p.shape==="star") star(0,0,p.r*1.3); else { c.beginPath(); c.arc(0,0,p.r*0.7,0,7); c.fill(); }
+        c.restore(); }
+      c.globalAlpha=1; requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    var closed=false, hold=opts.kind==="rankup"?7600:opts.kind==="loss"?4500:6000;
+    function close(){ if(closed) return; closed=true; ov.classList.add("out"); setTimeout(function(){ run=false; ov.remove(); if(done) done(); }, 650); }
+    var tm=setTimeout(close, hold);
+    ov.onclick=function(){ clearTimeout(tm); close(); };
+  }
+  return { celebrate:celebrate, play:play, unlock:ctx };
+})();
+
 // ---------- helpers ----------
 function $(s){ return document.querySelector(s); }
 function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -1319,31 +1496,33 @@ function rpBar(st){
 }
 function rToday(){
   var d=today(), pl=planUI(d), st=LED(), lv=levelFor(st.xp), t=targets(), tot=dayTotals(d), L=S.train[d], done=!!(L&&L.ex&&Object.keys(L.ex).length), si=seasonInfo();
-  var h='<div class="hero"><div class="heroB">'+badgeSVG(st.idx,112,{cls:"float"})+'</div><div class="heroT"><div class="kicker">Season '+si.num+' · '+si.daysLeft+' days left</div><h1 class="rk">'+esc(rankLabel(st.idx))+'</h1>'+rpBar(st)+
-    '<div class="hstats"><div><b>'+lv.lvl+'</b><span>Level</span></div><div><b>'+st.streak+'</b><span>Streak</span></div><div><b>'+st.shields+'/2</b><span>Shields</span></div><div><b>'+esc(rankOf(st.peak).r.name)+'</b><span>Peak</span></div></div>'+
-    '<div class="xpbar"><i style="width:'+(lv.into/lv.need*100)+'%"></i></div><div class="rprow"><span>XP '+lv.into+' / '+lv.need+'</span><span>Level '+(lv.lvl+1)+'</span></div></div></div>';
-  if(st.placements<RP_RULES.placements) h+='<div class="banner">Placements: '+st.placements+' of '+RP_RULES.placements+' sessions done. RP is doubled until you are placed.</div>';
-  h+='<div class="card mission"><div class="kicker">Today’s mission · Week '+pl.week+'</div>';
+  var nm=(S.profile.name||"").split(" ")[0];
+  var h='<p class="hello">'+(nm?"Hey "+esc(nm)+", ":"")+(done?"mission cleared today. Nice work.":pl.day?"ready to level up?":"recovery day. Rest counts too.")+'</p>';
+  h+='<div class="hero"><div class="heroB">'+badgeSVG(st.idx,92,{cls:"float"})+'</div><div class="heroT"><div class="kicker">Season '+si.num+' · '+si.daysLeft+' days left</div><h1 class="rk">'+esc(rankLabel(st.idx))+'</h1>'+rpBar(st)+
+    '<div class="pills"><span class="pill">Lv '+lv.lvl+'</span><span class="pill">🔥 '+st.streak+' streak</span><span class="pill">🛡 '+st.shields+'/2</span></div></div></div>';
+  if(st.placements<RP_RULES.placements) h+='<div class="banner">Placements '+st.placements+'/'+RP_RULES.placements+'. Double RP until you are placed.</div>';
+  h+='<div class="card mission">';
   if(pl.day){
-    h+='<div class="exh"><h3>'+esc(pl.day.title)+'</h3><span class="chip '+(pl.day.cardioDay?"C":pl.week)+'">'+(pl.day.cardioDay?"Cardio":pl.day.tendon?"Tendon":"Gym")+'</span></div><p class="small muted">'+esc(pl.day.focus)+'</p>'+
+    h+='<div class="kicker">Today’s mission</div><div class="exh"><h3>'+esc(pl.day.title)+'</h3><span class="chip '+(pl.day.cardioDay?"C":pl.week)+'">'+(pl.day.cardioDay?"Cardio":pl.day.tendon?"Home tendon":"Gym")+'</span></div>'+
        '<div class="mini">'+pl.day.ex.map(function(e){ return '<div class="minic">'+figHtml(e.n)+'<span>'+esc(e.n)+'</span></div>'; }).join("")+'</div>'+
-       '<div class="row" style="margin-top:10px"><button class="acc big" id="goTrain">'+(done?"Edit session":"Start mission")+'</button><span class="small muted">'+(st.placements<RP_RULES.placements?"Placement session":"Entry "+RP_RULES.entryBy(st.idx)+" RP")+' · '+(pl.day.cardioDay?"Zone 2 target "+pl.day.diff.z2+" min":esc(pl.day.rir||""))+'</span></div>';
-  } else h+='<h3>Recovery day</h3><p class="small muted">No mission today. Walk 8,000 to 10,000 steps, sleep 7 to 9 hours and still hit protein for RP.</p>';
+       '<button class="acc big wide" id="goTrain">'+(done?"Edit session":"Start mission")+'</button><div class="small muted center" style="margin-top:6px">'+(st.placements<RP_RULES.placements?"Placement session":"Entry "+RP_RULES.entryBy(st.idx)+" RP")+' · '+(pl.day.cardioDay?"Target "+pl.day.diff.z2+" min":esc(pl.day.rir||""))+'</div>';
+  } else h+='<div class="kicker">Today</div><h3>Recovery day</h3><p class="small muted">Walk, sleep 7 to 9 hours and hit protein. That still earns RP.</p>';
   h+='</div>';
-  h+='<h2>Daily quests</h2><div class="card">'+quests(d).map(function(q,i){ return '<button class="quest'+(q.done?" done":"")+'" data-go="'+q.go+'"><span class="qc" aria-hidden="true">'+(q.done?"✓":"")+'</span><span class="qt">'+esc(q.t)+'</span><span class="qx">'+esc(q.xp)+'</span></button>'; }).join("")+'<p class="note">Food and weigh-in RP is scored after midnight.</p></div>';
-  h+='<div class="card"><div class="exh"><h3>Fuel</h3><button id="goFood">Log food</button></div>'+macroRows(tot,t)+'</div>';
-  h+='<div class="card"><h3>Weigh-in</h3><div class="row"><input id="wIn" type="number" step="0.1" inputmode="decimal" placeholder="kg" style="max-width:140px"><button id="wSave">Save</button><span class="small muted" id="wAvg"></span></div></div>';
-  h+='<h2>Coach report</h2><div>'+checks().map(function(f){ return '<div class="flag '+f[0]+'">'+esc(f[1])+'</div>'; }).join("")+'</div>';
-  h+='<div class="card"><h3>Daily check-in</h3><p class="small muted">Your AI coach reads your last 14 days and tells you what to fix today.</p><button class="pri" id="checkin">Run check-in</button><div id="ciOut" class="msg c hide" style="max-width:100%;margin-top:10px"></div></div>';
-  h+='<h2>Recent RP</h2><div class="card">'+feedHtml(st,6)+'</div>';
+  var qs=quests(d), qd=qs.filter(function(q){ return q.done; }).length;
+  h+='<div class="card"><div class="exh"><h3>Daily quests</h3><span class="small muted">'+qd+' / '+qs.length+'</span></div>'+qs.map(function(q){ return '<button class="quest'+(q.done?" done":"")+'" data-go="'+q.go+'"><span class="qc" aria-hidden="true">'+(q.done?"✓":"")+'</span><span class="qt">'+esc(q.t)+'</span><span class="qx">'+esc(q.xp)+'</span></button>'; }).join("")+'</div>';
+  var pc=Math.min(100,tot.p/t.p*100), kc=Math.min(100,tot.kcal/t.kcal*100);
+  h+='<div class="card"><div class="exh"><h3>Fuel</h3><button class="soft" id="goFood">+ Food</button></div><div class="rings"><div class="ring" style="--v:'+kc+'"><b>'+r0(tot.kcal)+'</b><span>of '+t.kcal+' kcal</span></div><div class="ring p" style="--v:'+pc+'"><b>'+r0(tot.p)+' g</b><span>of '+t.p+' g protein</span></div></div>'+
+     '<div class="row" style="margin-top:10px"><input id="wIn" type="number" step="0.1" inputmode="decimal" placeholder="Weigh-in kg" style="max-width:150px"><button class="soft" id="wSave">Save</button><span class="small muted" id="wAvg"></span></div></div>';
+  h+='<details class="card more"><summary>Coach report and recent RP</summary>'+checks().map(function(f){ return '<div class="flag '+f[0]+'">'+esc(f[1])+'</div>'; }).join("")+
+     '<button class="pri" id="checkin" style="margin-top:8px">AI daily check-in</button><div id="ciOut" class="msg c hide" style="max-width:100%;margin-top:10px"></div><h3 style="margin-top:14px">Recent RP</h3>'+feedHtml(st,6)+'</details>';
   $("#v-today").innerHTML=h;
-  var wa=weightAvg(d,7); $("#wAvg").textContent = wa ? "7-day average "+wa.toFixed(1)+" kg" : "";
+  var wa=weightAvg(d,7); $("#wAvg").textContent = wa ? "7-day avg "+wa.toFixed(1)+" kg" : "";
   var tw=(S.profile.weights||[]).find(function(x){ return x.d===d; }); if(tw) $("#wIn").value=tw.w;
   $("#wSave").onclick=function(){ var v=num($("#wIn").value); if(!v) return; S.profile.weights=(S.profile.weights||[]).filter(function(x){ return x.d!==d; }).concat([{d:d,w:v}]).slice(-180); S.profile.weight=v; mark("profile"); render(); toast("Weigh-in saved"); };
   if($("#goTrain")) $("#goTrain").onclick=function(){ trainDate=d; tab("train"); };
   $("#goFood").onclick=function(){ foodDate=d; tab("food"); };
   document.querySelectorAll("[data-go]").forEach(function(b){ b.onclick=function(){ var g=b.dataset.go; if(g==="wt") $("#wIn").focus(); else { trainDate=d; foodDate=d; tab(g); } }; });
-  $("#checkin").onclick=function(){ askCoach("Run my daily check-in. Give me: 1) a one-line verdict on yesterday, 2) the single most important thing to fix today, 3) today's session focus with any load changes, 4) a food target reminder with a concrete meal idea. Mention my rank and what I need to rank up. Be strict and short.", $("#ciOut"), $("#checkin")); };
+  $("#checkin").onclick=function(){ askCoach("Run my daily check-in. Give me: 1) a one-line verdict on yesterday, 2) the single most important thing to fix today, 3) today's session focus with any load changes, 4) a food target reminder with a concrete meal idea. Mention my rank and what I need to rank up. Be friendly, direct and short.", $("#ciOut"), $("#checkin")); };
 }
 function feedHtml(st,n){
   var ev=st.events.filter(function(e){ return e.rp!==0||e.k==="shield"||e.k==="protect"; }).slice(-n).reverse();
@@ -1570,6 +1749,7 @@ function rMe(){
      '<label for="aKey">API key</label><input id="aKey" type="password" autocomplete="off" placeholder="sk-ant-..." value="'+esc(k)+'">'+
      '<label for="aModel" style="margin-top:8px">Model</label><input id="aModel" type="text" value="'+esc(getModel())+'">'+
      '<div class="row" style="margin-top:8px"><button class="pri" id="aSave">Save key</button><button id="aTest">Test</button><span class="small muted" id="aStat2">'+(k?"Key saved.":"No key yet.")+'</span></div></div>';
+  h+='<div class="card"><div class="exh"><h3>Sound and haptics</h3><button class="soft" id="sndT">'+(S.profile.sound===false?"Off":"On")+'</button></div><p class="small muted">Plays the reward sound when you clear a session or rank up.</p><button class="soft" id="sndTest">Preview rank-up</button></div>';
   h+='<div class="card"><h3>Install on your phone</h3><p class="small">iPhone: open this page in Safari, tap Share, then Add to Home Screen. Android: open in Chrome, tap the menu, then Install app. It then opens like an app and works offline.</p></div>';
   h+='<div class="card"><h3>Data</h3><p class="small muted">'+esc(cloudNote)+'</p><div class="row"><button id="bak">Save backup file</button><label class="btn" style="cursor:pointer">Restore backup<input id="imp" type="file" accept=".json,application/json" class="hide"></label></div>'+
      '<details style="margin-top:8px"><summary class="small">Bring data over from the Claude version</summary><p class="small muted">In the Claude version (Physique Coach), open Me and tap Copy all data. Paste it here.</p><textarea id="pasteIn"></textarea><button id="pasteGo" style="margin-top:6px">Import</button></details>'+
@@ -1583,9 +1763,11 @@ function rMe(){
   };
   $("#exp").onclick=function(){ navigator.clipboard.writeText(JSON.stringify(S)).then(function(){ toast("Copied"); },function(){ toast("Copy was blocked"); }); };
   $("#wipe").onclick=function(){ $("#wipeC").classList.remove("hide"); };
+  $("#sndT").onclick=function(){ S.profile.sound = S.profile.sound===false; saveLocal(); rMe(); };
+  $("#sndTest").onclick=function(){ var st=LED(); FX.celebrate({kind:"rankup",title:"Rank up",badge:badgeSVG(Math.min(21,st.idx+1),150,{cls:"pop"}),big:"+32 RP",sub:rankLabel(Math.min(21,st.idx+1))+" preview"}); };
   $("#aSave").onclick=function(){ try{ localStorage.setItem(AIKEY,$("#aKey").value.trim()); }catch(e){} S.profile.model=$("#aModel").value.trim()||"claude-sonnet-5-5"; saveLocal(); aiRefresh(); $("#aStat2").textContent=getKey()?"Key saved.":"Key removed."; };
   $("#aTest").onclick=async function(){ $("#aSave").onclick(); var st=$("#aStat2"); st.textContent="Testing..."; try{ await AI("Reply with the single word OK.",{max:10}); st.textContent="Working."; }catch(e){ st.textContent=aiErr(e); } };
-  $("#bak").onclick=function(){ var b=new Blob([JSON.stringify(S)],{type:"application/json"}), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="power-up-backup-"+today()+".json"; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000); };
+  $("#bak").onclick=function(){ var b=new Blob([JSON.stringify(S)],{type:"application/json"}), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="train9-backup-"+today()+".json"; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000); };
   function importData(txt){ try{ var o=JSON.parse(txt); if(!o||!o.profile) throw 0; S.profile=Object.assign({},S.profile,o.profile); S.food=Object.assign({},S.food,o.food||{}); S.train=Object.assign({},S.train,o.train||{}); S.chat=o.chat||S.chat; saveLocal(); render(); toast("Data imported"); }catch(e){ toast("That is not a valid backup"); } }
   $("#imp").onchange=function(){ var f=$("#imp").files[0]; if(f) f.text().then(importData); };
   $("#pasteGo").onclick=function(){ importData($("#pasteIn").value); };
@@ -1633,21 +1815,85 @@ function rRanked(){
   document.querySelectorAll("[data-unf]").forEach(function(b){ b.onclick=function(){ S.friends=S.friends.filter(function(x){ return x.name!==b.dataset.unf; }); saveLocal(); rRanked(); }; });
 }
 
-// ---------- Session result screen ----------
+// ---------- Session review: what went well, what to fix, what to do next ----------
+var EVID={
+  vol:{g:"Moderate",s:"Pelland 2026 meta-regression, 67 studies: more weekly sets build more muscle, with diminishing returns. Schoenfeld 2017: about 10+ sets per muscle a week."},
+  rir:{g:"Moderate",s:"Robinson 2024, 55 studies: growth was larger as sets ended closer to failure, about 0 to 5 reps in reserve. Strength barely depended on it."},
+  prot:{g:"Moderate",s:"Morton 2018, 49 studies, 1,863 people: gains plateaued near 1.6 g of protein per kg a day."},
+  sleep:{g:"Low",s:"Review of 17 studies: several nights of short sleep cut force on multi-joint lifts."},
+  pain:{g:"Low",s:"Tendon loading trials kept pain at about 3 out of 10 or less."},
+  cardio:{g:"Strong",s:"WHO 2020: adults should do 150 to 300 minutes of moderate aerobic activity a week, plus muscle strengthening on 2 or more days."},
+  prog:{g:"Practice",s:"Double progression is standard coaching practice, not tested in trials: hit the top of the rep range, then add load."}
+};
+function sessionReview(d){
+  var L=S.train[d]||{}, pl=planUI(d), day=pl.days.find(function(x){ return x.title===L.title; })||pl.day, R={good:[],bad:[],next:[]};
+  if(!day) return R;
+  function add(k,t,e){ R[k].push({t:t,e:EVID[e]}); }
+  var planned=0, done=0, rirs=[], tops=[], hold=[];
+  day.ex.forEach(function(e){
+    var m=/^(\d+) x/.exec(e.sets), want=e.cardio?1:(m?+m[1]:1), got=((L.ex||{})[e.n]||{}).sets||[];
+    var real=got.filter(function(s){ return num(s.r)>0||num(s.t)>0||num(s.min)>0||num(s.w)>0; });
+    planned+=want; done+=Math.min(want,real.length);
+    real.forEach(function(s){ if(s.rir!==""&&s.rir!=null) rirs.push(num(s.rir)); });
+    var rm=/x (\d+)\s*[–-]\s*(\d+)/.exec(e.sets);
+    if(rm&&real.length>=want&&real.every(function(s){ return num(s.r)>=+rm[2] && (s.rir===""||s.rir==null||num(s.rir)>=1); })) tops.push(e.n);
+  });
+  var frac=planned?done/planned:0;
+  if(day.cardioDay){
+    var mins=0; Object.keys(L.ex||{}).forEach(function(n){ (L.ex[n].sets||[]).forEach(function(s){ mins+=num(s.min); }); });
+    var wk=0; for(var i=0;i<7;i++){ var dd=addDays(d,-i), T=S.train[dd]; if(T&&T.ex) Object.keys(T.ex).forEach(function(n){ (T.ex[n].sets||[]).forEach(function(s){ wk+=num(s.min); }); }); }
+    if(mins>=(day.diff?day.diff.z2:30)) add("good","You hit your cardio target with "+r0(mins)+" minutes.","cardio"); else add("bad","Only "+r0(mins)+" minutes of cardio. Your rank target is "+(day.diff?day.diff.z2:30)+".","cardio");
+    if(wk<150) add("next",r0(wk)+" cardio minutes this week. Aim for at least 150.","cardio"); else add("good",r0(wk)+" cardio minutes this week, inside the health guideline.","cardio");
+    return R;
+  }
+  if(frac>=0.8) add("good","You finished "+Math.round(frac*100)+"% of your planned sets.","vol"); else add("bad","You finished "+Math.round(frac*100)+"% of planned sets. Missing sets means less growth stimulus.","vol");
+  if(rirs.length){
+    var avg=rirs.reduce(function(a,b){ return a+b; },0)/rirs.length;
+    if(avg<=3) add("good","Average effort was "+avg.toFixed(1)+" reps in reserve. That's close enough to failure to grow.","rir");
+    else add("bad","Average effort was "+avg.toFixed(1)+" reps in reserve. That's too easy for size. Push to 1 to 3.","rir");
+    var zero=rirs.filter(function(r){ return r===0; }).length;
+    if(zero>rirs.length*0.6) add("next","Most sets went to failure. On heavy compounds, stopping 2 to 4 short keeps strength gains with less fatigue.","rir");
+  } else add("next","Log reps in reserve on each set so I can judge your effort.","rir");
+  var h=liftHistory(), prs=[], drops=[];
+  Object.keys(L.ex||{}).forEach(function(n){ var a=h[n]; if(!a||a.length<2) return; var last=a[a.length-1], prev=a[a.length-2]; if(last.d!==d) return; if(last.v>prev.v*1.005) prs.push(n); else if(last.v<prev.v*0.95) drops.push(n); });
+  if(prs.length) add("good","New best on "+prs.slice(0,3).join(", ")+".","prog");
+  if(drops.length) add("bad","Strength dropped over 5% on "+drops.slice(0,2).join(", ")+". Check your sleep and food before blaming the program.","sleep");
+  if(tops.length) add("next",(day.tendon?"Make it harder next time (harder variation, slower tempo or a backpack) on ":"Add 2.5 kg next time on ")+tops.slice(0,3).join(", ")+". You hit the top of the rep range.","prog");
+  var sm=setsByMuscle(d), seen={};
+  day.ex.forEach(function(e){ var m=muscleOf(e.n); if(["chest","back","shoulders","biceps","triceps","quads","hamstrings","glutes"].indexOf(m)<0||seen[m]) return; seen[m]=1; var v=sm[m]||0;
+    if(v<10&&!day.tendon) add("next",m.charAt(0).toUpperCase()+m.slice(1)+" is on "+v+" hard sets this week. Aim for 10 to 20.","vol");
+    else if(v>20) add("next",m.charAt(0).toUpperCase()+m.slice(1)+" is on "+v+" sets this week. Past 20, returns shrink.","vol"); });
+  if(day.tendon){ var p=num(L.pain); if(L.pain===""||L.pain==null) add("next","Log your worst tendon pain, 0 to 10.","pain"); else if(p<=3) add("good","Tendon pain stayed at "+p+" out of 10. That's the safe zone.","pain"); else add("bad","Tendon pain hit "+p+" out of 10. Use an easier variation next time. If it lasts past tomorrow, see a physio.","pain"); }
+  var t=targets(), x=dayTotals(d);
+  if(x.p>=t.p*0.9) add("good","Protein is on track today ("+r0(x.p)+" of "+t.p+" g).","prot"); else add("next","Protein is "+r0(x.p)+" of "+t.p+" g today. Have a protein meal within a few hours.","prot");
+  return R;
+}
+function reviewHtml(R){
+  function sec(k,title,cls){ if(!R[k].length) return ""; return '<div class="rv '+cls+'"><div class="rvh">'+title+'</div>'+R[k].map(function(i){ return '<details class="rvi"><summary>'+esc(i.t)+'</summary><div class="rve"><span class="g '+(i.e.g==="Moderate"||i.e.g==="Strong"?"g1":i.e.g==="Low"?"g2":"g3")+'">'+esc(i.e.g)+'</span> '+esc(i.e.s)+'</div></details>'; }).join("")+'</div>'; }
+  return sec("good","What you did well","ok")+sec("bad","What hurt your session","bad")+sec("next","Fix for next time","nx");
+}
+
+// ---------- Session result: celebration, then animated level-up bar and review ----------
 function showResult(d){
-  _led=null; var st=LED(), ev=null;
+  var keep=S.train[d]; delete S.train[d]; var before=ledger(); S.train[d]=keep; _led=null; var st=LED(), ev=null;
   for(var i=st.events.length-1;i>=0;i--){ if(st.events[i].d===d&&st.events[i].k==="session"){ ev=st.events[i]; break; } }
   if(!ev){ toast("Log at least one set to score the session"); return; }
-  var up=ev.to>ev.from, dn=ev.to<ev.from, dlg=document.getElementById("resdlg"), b=dlg.querySelector(".rbody");
-  var pain=num((S.train[d]||{}).pain);
-  b.innerHTML='<div class="kicker center">'+(up?"Rank up":dn?"Demoted":"Session result")+'</div>'+
-    '<div class="resb">'+badgeSVG(ev.to,up?140:110,{cls:up?"pop":""})+'</div>'+
-    '<div class="center"><h1 class="rk">'+esc(rankLabel(ev.to))+'</h1><div class="bigrp '+(ev.rp>=0?"pos":"neg")+'">'+(ev.rp>=0?"+":"")+ev.rp+' RP</div></div>'+
-    '<div class="card" style="margin-top:10px">'+(ev.lines||[]).map(function(l){ return '<div class="rr"><span>'+esc(l[0])+'</span><b class="'+(l[1]>0?"pos":l[1]<0?"neg":"")+'">'+(l[1]>0?"+":"")+(l[1]||"")+'</b></div>'; }).join("")+'</div>'+
-    rpBar(st)+
-    (pain>3?'<div class="flag bad" style="margin-top:10px">Pain was above 3 out of 10. It costs no RP, but go to an easier variation next time. If it lasts past tomorrow, see a physio.</div>':'')+
-    '<button class="acc big" id="resok" style="width:100%;margin-top:14px">Continue</button>';
+  var up=ev.to>ev.from, dn=ev.to<ev.from, kind=up?"rankup":ev.rp<0?"loss":"win";
+  FX.celebrate({ kind:kind, title:up?"Rank up":dn?"Demoted":ev.rp>=0?"Session cleared":"Tough session", badge:badgeSVG(ev.to,up?150:110,{cls:"pop"}), big:(ev.rp>=0?"+":"")+ev.rp+" RP", sub:up?rankLabel(ev.to)+" unlocked":rankLabel(ev.to) }, function(){ openReview(d,ev,st,before); });
+}
+function openReview(d,ev,st,before){
+  var dlg=document.getElementById("resdlg"), b=dlg.querySelector(".rbody");
+  var totAfter=totalRP(st), totBefore=totalRP(before), fromPct= ev.to>ev.from?0:Math.max(0,Math.min(100, st.rp-(totAfter-totBefore)));
+  var lvA=levelFor(st.xp), lvB=levelFor(before.xp), xpFrom= lvA.lvl>lvB.lvl?0:lvB.into/lvB.need*100;
+  var R=sessionReview(d);
+  b.innerHTML='<div class="kicker center">Session review</div>'+
+    '<div class="lvwrap"><div class="lvrow"><span>'+esc(rankLabel(st.idx))+'</span><b class="'+(ev.rp>=0?"pos":"neg")+'">'+(ev.rp>=0?"+":"")+ev.rp+' RP</b></div><div class="rpbar big"><i id="rvRp" style="width:'+fromPct+'%"></i></div><div class="rprow"><span>'+(st.idx>=21?"Apex score "+st.rp:st.rp+" / 100 RP")+'</span><span>Next: '+esc(rankLabel(Math.min(21,st.idx+1)))+'</span></div>'+
+    '<div class="lvrow" style="margin-top:12px"><span>Level '+lvA.lvl+(lvA.lvl>lvB.lvl?' <b class="up">Level up</b>':'')+'</span><b class="xpc">+'+Math.max(0,st.xp-before.xp)+' XP</b></div><div class="xpbar big"><i id="rvXp" style="width:'+xpFrom+'%"></i></div></div>'+
+    '<details class="rvi rplines"><summary>RP breakdown</summary>'+(ev.lines||[]).map(function(l){ return '<div class="rr"><span>'+esc(l[0])+'</span><b class="'+(l[1]>0?"pos":l[1]<0?"neg":"")+'">'+(l[1]>0?"+":"")+(l[1]||"")+'</b></div>'; }).join("")+'</details>'+
+    reviewHtml(R)+'<p class="note">Tap any line to see the evidence behind it.</p>'+
+    '<button class="acc big" id="resok" style="width:100%;margin-top:12px">Done</button>';
   if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open","");
+  setTimeout(function(){ var a=$("#rvRp"), x=$("#rvXp"); if(a) a.style.width=(st.idx>=21?100:Math.min(100,st.rp))+"%"; if(x) x.style.width=(lvA.into/lvA.need*100)+"%"; }, 120);
   $("#resok").onclick=function(){ if(dlg.close) dlg.close(); else dlg.removeAttribute("open"); render(); };
 }
 
