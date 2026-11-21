@@ -1152,15 +1152,15 @@ var STYLES = [
 
 // ----- curvy shape styles (18+ only) -----
 STYLES.push(
- { id: "hourglass", sex: "f", adult: true, name: "Hourglass", kind: "Curves and shape", line: "Bigger rounder glutes, lifted chest look, snatched waist",
-   goal: "lean", rules: ["Glutes three times a week, 10 to 20 hard sets in total, the range linked to the most growth.", "Hip thrusts and Romanian deadlifts build glute size. Split squats shape the upper glute.", "Chest, shoulders and back give a lifted, hourglass upper body. Training builds the muscle under breast tissue for a fuller look, but it can't change breast size.", "No heavy oblique work, so the waist stays tight."],
+ { id: "hourglass", sex: "f", adult: true, name: "Hourglass", kind: "Curves and shape", line: "Bigger glutes, strong upper body, smaller-looking waist",
+   goal: "lean", rules: ["Glutes twice a week, about 10 to 20 hard sets. More sets usually mean more growth, but each extra set adds a little less.", "Hip thrusts and squats both build glute size. Hip abduction may add more to the upper glute.", "Shoulders and back widen the upper body so the waist looks smaller. Chest training builds the muscle under the breast but does not grow breast tissue.", "Ab work will not burn waist fat. A smaller-looking waist comes from overall fat loss and bigger glutes."],
    days: [
    D("Glutes, heavy", "Heavy hip thrusts and hinges for glute size.", [
      ["Barbell hip thrust","4 x 6–10","2 min","Chin tucked, pause and squeeze at the top."],
      ["Romanian deadlift","3 x 8–10","2 min","Hips back until you feel the hamstrings, then drive the hips forward."],
      ["Bulgarian split squat","3 x 8–10 each","90 s","Lean forward slightly to bias the glutes."],
      ["Hip abduction machine","3 x 15–20","45 s","Lean forward a little and hold the last rep."]]),
-   D("Upper, lifted chest look", "Chest muscle, shoulders and posture for a fuller, lifted look.", [
+   D("Upper body and posture", "Chest, shoulders and upper back for a balanced upper body.", [
      ["Incline dumbbell press","4 x 8–12","90 s","Slow lowering to a deep stretch."],
      ["Pec deck","3 x 12–15","60 s","Hug the arms together and pause."],
      ["Lat pulldown","3 x 10–12","90 s","Elbows to the hips, chest up."],
@@ -1169,18 +1169,18 @@ STYLES.push(
    D("Glutes and hamstrings", "Volume and pump for shape.", [
      ["Hip thrust, single leg","3 x 10–12 each","90 s","Pause at the top."],
      ["Reverse lunge","3 x 10 each","90 s","Long step back, push through the front heel."],
-     ["Lying leg curl","3 x 12","60 s","Slow on the way down."],
+     ["Seated leg curl","3 x 12","60 s","Lean forward a little, slow on the way down."],
      ["Cable kickback","3 x 15 each","45 s","Squeeze at the back, don't arch."],
      ["Banded side walk","3 x 20 steps","45 s","Stay low, toes forward."]]),
-   D("Upper and waist", "Back width and a tight core make the waist look smaller.", [
+   D("Upper and core", "Back width and core strength. Fat loss is what slims the waist.", [
      ["Seated cable row","3 x 10–12","90 s","Tall chest, pull to the belly button."],
      ["Dumbbell shoulder press","3 x 8–12","90 s","Controlled, no arching."],
      ["Single-arm dumbbell row","3 x 10 each","60 s","Elbow to the hip."],
      ["Pallof press","3 x 12 each","45 s","Resist the twist, ribs down."],
-     ["Stomach vacuum","3 x 20 s","45 s","Exhale fully, pull the belly button in and hold."]])
+     ["Dead bug","3 x 10 each","45 s","Lower back pressed down, move slowly."]])
    ] },
- { id: "glutespec", sex: "f", adult: true, name: "Glute Specialist", kind: "Glute growth focus", line: "Four glute days from every angle",
-   goal: "lean", rules: ["Glutes four days a week from different angles: thrust, hinge, squat and abduction.", "Most sets 1 to 3 reps short of failure. Add load once you hit the top of the rep range.", "One upper day keeps your shoulders and back in proportion."],
+ { id: "glutespec", sex: "f", adult: true, name: "Glute Specialist", kind: "Glute growth focus", line: "Three glute days from every angle",
+   goal: "lean", rules: ["Glutes three days a week from different angles: thrust, hinge and squat, with abduction for the upper glute.", "Most sets 1 to 3 reps short of failure. Add load once you hit the top of the rep range.", "One upper day keeps your shoulders and back in proportion."],
    days: [
    D("Glutes, thrust", "Heavy thrusts first.", [
      ["Barbell hip thrust","4 x 8–12","2 min","Pause and squeeze at the top."],
@@ -1193,10 +1193,10 @@ STYLES.push(
      ["Seated cable row","3 x 12","90 s","Tall chest."],
      ["Lateral raise","3 x 15","60 s","Lead with the elbows."],
      ["Triceps pushdown","3 x 12","60 s","Elbows pinned."]]),
-   D("Glutes, hinge", "Hinges for the lower glute and hamstrings.", [
+   D("Glutes, hinge", "Hinges and curls for the hamstrings and lower glute.", [
      ["Romanian deadlift","4 x 8–10","2 min","Hips back, flat back."],
      ["Single-leg Romanian deadlift","3 x 10 each","90 s","Square hips."],
-     ["Lying leg curl","3 x 12","60 s","Slow lowering."],
+     ["Seated leg curl","3 x 12","60 s","Lean forward a little, slow lowering."],
      ["Banded side walk","3 x 20 steps","45 s","Stay low."]]),
    D("Glutes, squat", "Deep knee bends for the whole glute.", [
      ["Hack squat","4 x 8–12","2 min","Feet high and wide, sink deep."],
@@ -3224,26 +3224,26 @@ function openReports(){
 
 // ===================== focus areas: popular picks per sex, or any muscle (custom) =====================
 var FOCUS={
-  f:[["glutes","Bigger glutes","Glute strength","Hip thrusts on lower days",0],["quads","Shaped legs","Legs","Leg extensions on lower days",0],["waist","Snatched waist and core","Core strength","Deep core work, no bulky obliques",0],
-     ["shoulders","Toned arms and shoulders","Arms and shoulders","Lateral raises on upper days",0],["chest","Lifted chest look","","Builds the chest muscle under breast tissue and improves posture. Training can't change breast size.",1],["back","Toned back","Back","Pulldowns on upper days",0]],
-  m:[["chest","Bigger chest","Chest","Incline presses on upper days",0],["biceps","Bigger arms","Arms","Curls on upper days",0],["back","Wide back, V-taper","Back","Pulldowns on upper days",0],
-     ["shoulders","Capped shoulders","Shoulders","Lateral raises on upper days",0],["quads","Bigger legs","Legs","Extra quad work on lower days",0],["abs","Visible abs","Core","Weighted ab work",0]]
+  f:[["glutes","Bigger glutes","Glute strength","Hip thrusts on lower days",0],["quads","Shaped legs","Legs","Leg extensions on lower days",0],["waist","Core and waist","Core strength","Core stability work. A smaller-looking waist comes from fat loss and bigger glutes, not ab work.",0],
+     ["shoulders","Toned arms and shoulders","Arms and shoulders","Lateral raises on upper days",0],["chest","Chest and posture","Chest","Builds the chest muscle under the breast and helps posture. It does not grow breast tissue.",0],["back","Toned back","Back","Pulldowns on upper days",0]],
+  m:[["chest","Bigger chest","Chest","Incline presses on upper days",0],["biceps","Bigger arms","Arms","Curls on upper days",0],["back","Wide back (lats)","Back","Pulldowns on upper days",0],
+     ["shoulders","Bigger shoulders","Shoulders","Lateral raises on upper days",0],["quads","Bigger legs","Legs","Extra quad work on lower days",0],["abs","Abs and core","Core","Builds the abs. They show once body fat is low.",0]]
 };
-var MUSCLES=[["glutes","Glutes"],["quads","Quads"],["hamstrings","Hamstrings"],["calves","Calves"],["chest","Chest"],["back","Back"],["shoulders","Shoulders"],["biceps","Biceps"],["triceps","Triceps"],["forearms","Forearms"],["traps","Traps"],["abs","Abs"],["waist","Deep core"]];
+var MUSCLES=[["glutes","Glutes"],["quads","Quads"],["hamstrings","Hamstrings"],["calves","Calves"],["chest","Chest"],["back","Back"],["shoulders","Shoulders"],["biceps","Biceps"],["triceps","Triceps"],["forearms","Forearms"],["traps","Traps"],["abs","Abs"],["waist","Core stability"]];
 var FOCUS_EX={
   glutes:{n:"Hip thrust (focus)",sets:"3 x 10–15",rest:"90 s",cue:"Extra glute volume for your focus. Pause and squeeze at the top.",r:"lower"},
-  quads:{n:"Leg extension (focus)",sets:"3 x 12–15",rest:"60 s",cue:"Pause at the top, slow on the way down.",r:"lower"},
-  hamstrings:{n:"Lying leg curl (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Hips pressed down, slow lowering.",r:"lower"},
-  calves:{n:"Standing calf raise (focus)",sets:"4 x 10–15",rest:"60 s",cue:"Full stretch at the bottom, pause at the top.",r:"lower"},
+  quads:{n:"Leg extension (focus)",sets:"3 x 12–15",rest:"60 s",cue:"Recline the seat if you can. Use the full bend at the bottom and lower slowly.",r:"lower"},
+  hamstrings:{n:"Seated leg curl (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Lean forward a little for a deeper stretch. Slow lowering.",r:"lower"},
+  calves:{n:"Standing calf raise (focus)",sets:"3 x 10–15",rest:"60 s",cue:"Full stretch at the bottom, pause at the top.",r:"lower"},
   chest:{n:"Incline dumbbell press (focus)",sets:"3 x 8–12",rest:"90 s",cue:"Extra chest volume for your focus. Slow lowering to a deep stretch.",r:"upper"},
   back:{n:"Lat pulldown (focus)",sets:"3 x 10–12",rest:"90 s",cue:"Elbows to the hips, stretch at the top.",r:"upper"},
   shoulders:{n:"Lateral raise (focus)",sets:"3 x 15",rest:"60 s",cue:"Lead with the elbows. Slow on the way down.",r:"upper"},
-  biceps:{n:"Incline dumbbell curl (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Full stretch at the bottom. No swinging.",r:"upper"},
+  biceps:{n:"Incline dumbbell curl (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Arms fully straight at the bottom. No swinging.",r:"upper"},
   triceps:{n:"Overhead triceps extension (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Deep stretch behind the head, elbows in.",r:"upper"},
   forearms:{n:"Reverse curl (focus)",sets:"3 x 12–15",rest:"45 s",cue:"Palms down, slow lowering.",r:"upper"},
   traps:{n:"Dumbbell shrug (focus)",sets:"3 x 12–15",rest:"60 s",cue:"Straight up, pause at the top.",r:"upper"},
   abs:{n:"Ab wheel rollout (focus)",sets:"3 x 8–12",rest:"60 s",cue:"Ribs down. Roll only as far as you can hold a flat back.",r:"any"},
-  waist:{n:"Pallof press (focus)",sets:"3 x 12 each",rest:"45 s",cue:"Resist the twist, ribs down, slow breathing.",r:"any"}
+  waist:{n:"Pallof press (focus)",sets:"3 x 12 each",rest:"45 s",cue:"Core stability. Resist the twist, ribs down, slow breathing.",r:"any"}
 };
 var FOCUS_MAX=3;
 function isAdult(){ return num(S.profile.age)>=18; }
@@ -3252,16 +3252,21 @@ function focusLabel(id,sx,adult){ var r=focusList(sx,adult).find(function(f){ re
 function toggleFocus(arr,k){ var i=arr.indexOf(k); if(i>=0) arr.splice(i,1); else { if(arr.length>=FOCUS_MAX) arr.shift(); arr.push(k); } return arr; }
 function dayRegion(d){ var lo=0, up=0; d.ex.forEach(function(e){ var m=muscleOf(e.n); if(/glutes|quads|hamstrings|calves/.test(m)) lo++; else if(/chest|back|shoulders|biceps|triceps|forearms/.test(m)) up++; }); return lo>up?"lower":up>lo?"upper":"mixed"; }
 function applyFocus(days){
-  var fs=(S.profile.focus||[]).filter(function(k){ return FOCUS_EX[k]; }).slice(0,FOCUS_MAX), anyN=0;
+  // each focus lands on 2 or 3 training days (about 6 to 9 extra hard sets a week), spread across the week
+  var fs=(S.profile.focus||[]).filter(function(k){ return FOCUS_EX[k]; }).slice(0,FOCUS_MAX);
   if(!fs.length) return days;
-  return days.map(function(d){
-    if(d.cardioDay||d.tendon||!d.ex||!d.ex.length) return d;
-    var reg=dayRegion(d), add=[], usedAny=false;
-    fs.forEach(function(k){ var e=FOCUS_EX[k], fit=e.r===reg||(reg==="mixed"&&e.r!=="any")||(e.r==="any"&&anyN<2);
-      if(fit&&!d.ex.some(function(x){ return x.n===e.n; })){ add.push({ n:e.n, sets:e.sets, rest:e.rest, cue:e.cue, tag:"Focus" }); if(e.r==="any") usedAny=true; } });
-    if(usedAny) anyN++;
-    return add.length?Object.assign({},d,{ ex:d.ex.concat(add) }):d;
+  var out=days.map(function(d){ return d; }), tr=[];
+  out.forEach(function(d,i){ if(!d.cardioDay&&!d.tendon&&d.ex&&d.ex.length) tr.push(i); });
+  if(!tr.length) return out;
+  var added={}; tr.forEach(function(i){ added[i]=0; });
+  fs.forEach(function(k){ var e=FOCUS_EX[k], cap=e.r==="any"?2:3;
+    var match=tr.filter(function(i){ var reg=dayRegion(out[i]); return e.r==="any"||e.r===reg||reg==="mixed"; });
+    var pick=match.length>cap?[0,1,2].slice(0,cap).map(function(j){ return match[Math.round(j*(match.length-1)/(cap-1))]; }):match.slice();
+    if(pick.length<2) tr.filter(function(i){ return pick.indexOf(i)<0; }).sort(function(x,y){ return added[x]-added[y]; }).slice(0,2-pick.length).forEach(function(i){ pick.push(i); });
+    pick.forEach(function(i){ var d=out[i]; if(d.ex.some(function(x){ return x.n===e.n; })) return;
+      out[i]=Object.assign({},d,{ ex:d.ex.concat([{ n:e.n, sets:e.sets, rest:e.rest, cue:e.cue, tag:"Focus" }]) }); added[i]++; });
   });
+  return out;
 }
 function weekA(st){
   if(st.adult&&!isAdult()) st=styleById(st.sex==="f"?"patty":"toji");
@@ -3277,8 +3282,8 @@ function focusPicker(sx,adult,sel,openCustom){
   return '<div class="fchips">'+rec.map(function(f){ return '<button class="fchip" data-fo="'+f.id+'" aria-pressed="'+(sel.indexOf(f.id)>=0)+'" title="'+esc(f.desc)+'">'+esc(f.label)+'</button>'; }).join("")+'</div>'+
     '<button class="glink" data-fcustom="1" style="margin:8px 0 0;padding-left:0">'+(custom?"Hide custom":"Custom: pick any muscle")+'</button>'+
     (custom?'<div class="fchips">'+MUSCLES.map(function(m){ return '<button class="fchip" data-fo="'+m[0]+'" aria-pressed="'+(sel.indexOf(m[0])>=0)+'">'+m[1]+'</button>'; }).join("")+'</div>':'')+
-    (sx==="f"&&sel.indexOf("chest")>=0?'<p class="note">Training builds the chest muscle under breast tissue and improves posture for a fuller, lifted look. It can\'t change breast size.</p>':'')+
-    '<p class="note">Each focus adds about 3 to 6 extra hard sets a week for that muscle. More weekly sets build more muscle, with smaller returns past about 20 (Pelland 2026, Schoenfeld 2017).</p>';
+    (sx==="f"&&sel.indexOf("chest")>=0?'<p class="note">Chest training builds the muscle under the breast and helps posture. It does not grow breast tissue, and losing body fat can make breasts a little smaller.</p>':'')+
+    '<p class="note">Each focus adds one exercise on 2 or 3 days, about 6 to 9 extra hard sets a week (hard means 1 to 3 reps short of failure). More weekly sets usually build more muscle, but each extra set adds a bit less, and past about 20 sets a week the gain is small (Pelland 2026).</p>';
 }
 var _focusCustom=false;
 function focusCard(){
@@ -3523,7 +3528,7 @@ var CLOUD=(function(){
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0204";
+var APP_VERSION="2026.11.22-0230";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
