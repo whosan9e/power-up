@@ -660,6 +660,7 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
 @keyframes t9floatup{0%{opacity:0;transform:translate(-50%,6px)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-44px)}}
 
 button.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.vtap{display:block;margin:6px auto 0;background:none;border:0;color:var(--ink3);font:500 12px var(--fb);min-height:32px;padding:4px 10px}
 </style>
 </head>
 <body>
@@ -2295,35 +2296,28 @@ function rMe(){
     '<div><label for="pGoal">Goal</label><select id="pGoal">'+[["bulk","Bulk"],["lean","Lean bulk"],["recomp","Recomp"],["cut","Cut"]].map(function(g){ return '<option value="'+g[0]+'"'+(p.goal===g[0]?" selected":"")+'>'+g[1]+'</option>'; }).join("")+'</select></div>'+
     f("pStart","Cycle start (a Monday)",p.start,"date")+'</div><button class="pri" id="pSave" style="margin-top:10px">Save</button></div>';
   h+='<div class="card"><h3>Your targets</h3><div class="grid3" style="margin-top:8px"><div class="stat"><b>'+t.kcal+'</b><span>kcal a day</span></div><div class="stat"><b>'+t.p+' g</b><span>Protein</span></div><div class="stat"><b>'+t.c+' g</b><span>Carbs</span></div><div class="stat"><b>'+t.f+' g</b><span>Fat</span></div><div class="stat"><b>'+t.fib+' g</b><span>Fibre</span></div><div class="stat"><b>'+t.tdee+'</b><span>Est. maintenance</span></div></div><p class="note">Mifflin-St Jeor estimate. The coach adjusts it from your weight trend.</p></div>';
-  var k=getKey();
-  h+='<div class="card"><h3>AI scanner and coach</h3><p class="small muted">Uses your own Anthropic API key, billed by Anthropic per use. Get one at console.anthropic.com under API keys. The key is stored only on this phone and sent only to Anthropic.</p>'+
-     '<label for="aKey">API key</label><input id="aKey" type="password" autocomplete="off" placeholder="sk-ant-..." value="'+esc(k)+'">'+
-     '<label for="aModel" style="margin-top:8px">Model</label><input id="aModel" type="text" value="'+esc(getModel())+'">'+
-     '<div class="row" style="margin-top:8px"><button class="pri" id="aSave">Save key</button><button id="aTest">Test</button><span class="small muted" id="aStat2">'+(k?"Key saved.":"No key yet.")+'</span></div></div>';
-  h+='<div class="card"><div class="exh"><h3>App version</h3><button class="soft" id="updBtn">Check for updates</button></div><p class="small muted">Version '+esc(APP_VERSION)+'. Updates install on their own when you open the app.</p></div>';
-  h+='<div class="card"><h3>Install on your phone</h3><p class="small">iPhone: open this page in Safari, tap Share, then Add to Home Screen. Android: open in Chrome, tap the menu, then Install app. It then opens like an app and works offline.</p></div>';
-  h+='<div class="card"><h3>Data</h3><p class="small muted">'+esc(cloudNote)+'</p><div class="row"><button id="bak">Save backup file</button><label class="btn" style="cursor:pointer">Restore backup<input id="imp" type="file" accept=".json,application/json" class="hide"></label></div>'+
-     '<details style="margin-top:8px"><summary class="small">Bring data over from the Claude version</summary><p class="small muted">In the Claude version (Physique Coach), open Me and tap Copy all data. Paste it here.</p><textarea id="pasteIn"></textarea><button id="pasteGo" style="margin-top:6px">Import</button></details>'+
-     '<div class="row" style="margin-top:8px"><button id="exp">Copy all data</button><button id="wipe">Erase everything</button></div><div id="wipeC" class="hide row" style="margin-top:8px"><span class="small">Erase all logs on this device?</span><button id="wipeY" class="acc">Yes, erase</button><button id="wipeN">Cancel</button></div></div>';
+  if(!standaloneApp()) h+='<div class="card"><h3>Install on your phone</h3><p class="small">iPhone: open this page in Safari, tap Share, then Add to Home Screen. Android: open in Chrome, tap the menu, then Install app. It then opens like an app and works offline.</p></div>';
+  h+='<div class="card"><h3>Your data</h3><p class="small muted">'+(CLOUD.user()?"Your progress syncs to your account automatically.":"Saved on this phone. Sign in to sync it to your account.")+' You can also keep a backup file.</p><div class="row"><button id="bak">Save backup file</button><label class="btn" style="cursor:pointer">Restore backup<input id="imp" type="file" accept=".json,application/json" class="hide"></label></div></div>'+devCard();
   h+='<p class="small muted">Training information, not medical advice. See a doctor or physio for pain that lasts, or anything sharp, numb or swollen.</p>';
+  h+='<p class="center" style="margin-top:14px"><a class="small" href="privacy.html" style="color:var(--ink2)">Privacy policy</a></p><button class="vtap" id="vTap">Train9 '+esc(APP_VERSION)+'</button>';
   $("#v-me").innerHTML=h;
   $("#pSave").onclick=function(){
     var g=$("#pGoal").value; if(g!==p.goal) p.goalSet=true;
     Object.assign(p,{ name:$("#pName").value.trim(), sex:$("#pSex").value, age:num($("#pAge").value), height:num($("#pH").value), weight:num($("#pW").value), act:num($("#pAct").value), goal:g, start: $("#pStart").value?mondayOf($("#pStart").value):p.start });
     mark("profile"); render(); toast("Saved");
   };
-  $("#exp").onclick=function(){ navigator.clipboard.writeText(JSON.stringify(S)).then(function(){ toast("Copied"); },function(){ toast("Copy was blocked"); }); };
-  $("#wipe").onclick=function(){ $("#wipeC").classList.remove("hide"); };
-  $("#updBtn").onclick=function(){ UPD.check(true); };
-  acctWire();
-  $("#aSave").onclick=function(){ try{ localStorage.setItem(AIKEY,$("#aKey").value.trim()); }catch(e){} S.profile.model=$("#aModel").value.trim()||"claude-sonnet-5-5"; saveLocal(); aiRefresh(); $("#aStat2").textContent=getKey()?"Key saved.":"Key removed."; };
-  $("#aTest").onclick=async function(){ $("#aSave").onclick(); var st=$("#aStat2"); st.textContent="Testing..."; try{ await AI("Reply with the single word OK.",{max:10}); st.textContent="Working."; }catch(e){ st.textContent=aiErr(e); } };
+  if($("#exp")) $("#exp").onclick=function(){ navigator.clipboard.writeText(JSON.stringify(S)).then(function(){ toast("Copied"); },function(){ toast("Copy was blocked"); }); };
+  if($("#wipe")) $("#wipe").onclick=function(){ $("#wipeC").classList.remove("hide"); };
+  if($("#updBtn")) $("#updBtn").onclick=function(){ UPD.check(true); };
+  acctWire(); devWire();
+  if($("#aSave")) $("#aSave").onclick=function(){ try{ localStorage.setItem(AIKEY,$("#aKey").value.trim()); }catch(e){} S.profile.model=$("#aModel").value.trim()||"claude-sonnet-5-5"; saveLocal(); aiRefresh(); $("#aStat2").textContent=getKey()?"Key saved.":"Key removed."; };
+  if($("#aTest")) $("#aTest").onclick=async function(){ $("#aSave").onclick(); var st=$("#aStat2"); st.textContent="Testing..."; try{ await AI("Reply with the single word OK.",{max:10}); st.textContent="Working."; }catch(e){ st.textContent=aiErr(e); } };
   $("#bak").onclick=function(){ var b=new Blob([JSON.stringify(S)],{type:"application/json"}), a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="train9-backup-"+today()+".json"; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000); };
   function importData(txt){ try{ var o=JSON.parse(txt); if(!o||!o.profile) throw 0; S.profile=Object.assign({},S.profile,o.profile); S.food=Object.assign({},S.food,o.food||{}); S.train=Object.assign({},S.train,o.train||{}); S.chat=o.chat||S.chat; saveLocal(); render(); toast("Data imported"); }catch(e){ toast("That is not a valid backup"); } }
   $("#imp").onchange=function(){ var f=$("#imp").files[0]; if(f) f.text().then(importData); };
-  $("#pasteGo").onclick=function(){ importData($("#pasteIn").value); };
-  $("#wipeN").onclick=function(){ $("#wipeC").classList.add("hide"); };
-  $("#wipeY").onclick=function(){ Object.keys(S.food).forEach(function(k){ S.food[k]=[]; mark("food",k); }); Object.keys(S.train).forEach(function(k){ delete S.train[k]; mark("train",k); }); S.chat=[]; mark("chat"); S.profile.weights=[]; mark("profile"); render(); toast("Erased"); };
+  if($("#pasteGo")) $("#pasteGo").onclick=function(){ importData($("#pasteIn").value); };
+  if($("#wipeN")) $("#wipeN").onclick=function(){ $("#wipeC").classList.add("hide"); };
+  if($("#wipeY")) $("#wipeY").onclick=function(){ Object.keys(S.food).forEach(function(k){ S.food[k]=[]; mark("food",k); }); Object.keys(S.train).forEach(function(k){ delete S.train[k]; mark("train",k); }); S.chat=[]; mark("chat"); S.profile.weights=[]; mark("profile"); render(); toast("Erased"); };
 }
 
 // ---------- boot ----------
@@ -2781,7 +2775,8 @@ function rFood(){
   var h='<div class="tnav"><button class="ibtn" id="fPrev" aria-label="Previous day">'+CHEV_L+'</button><div class="tdate"><b>'+(d===today()?"Today":esc(fmtDay(d)))+'</b><span>'+r0(tot.kcal)+' of '+t.kcal+' kcal</span></div><button class="ibtn" id="fNext" aria-label="Next day"'+(d>=today()?" disabled":"")+'>'+CHEV_R+'</button></div>';
   h+='<div class="card">'+macroRows(tot,t)+'<div class="grid3" style="margin-top:12px"><div class="stat"><b>'+r0(tot.sugar)+' g</b><span>Sugar</span></div><div class="stat"><b>'+r0(tot.sodium)+' mg</b><span>Sodium</span></div><div class="stat"><b>'+(t.kcal-r0(tot.kcal))+'</b><span>kcal left</span></div></div></div>';
   h+='<div class="card"><div class="exh"><h3>Scan your meal</h3><span class="chip A">AI</span></div><p class="small muted">Take a photo or pick one from your library. The scan names each food, estimates portions and runs the numbers. It can take up to a minute.</p>';
-  if(!key) h+='<div class="onote">Scanning uses your Anthropic API key. Add it in Settings (gear, top right). You can still log foods by hand below.</div>';
+  if(!key&&typeof CLOUD!=="undefined"&&CLOUD.aiKnown()&&!CLOUD.aiOn()) h+='<div class="onote">AI meal scanning is switching on soon. You can log foods by hand below.</div>';
+  else if(!key&&typeof CLOUD!=="undefined"&&!CLOUD.user()) h+='<div class="onote">Sign in to scan meals with AI.</div>';
   h+='<div class="camrow"><label class="cambtn main">'+ICAM+'<span>Take photo</span><input id="fCam" type="file" accept="image/*" capture="environment" class="hide"></label><label class="cambtn">'+IGAL+'<span>Choose from Photos</span><input id="fGal" type="file" accept="image/*" class="hide"></label></div>';
   if(F.url) h+='<div class="scanbox'+(F.busy?' busy':'')+'"><img src="'+F.url+'" alt="Meal photo"><div class="scl"></div></div>';
   h+='<label for="hint" style="margin-top:12px">Add details (optional, improves accuracy)</label><textarea id="hint" placeholder="e.g. 200 g rice, 2 chicken thighs, cooked in olive oil">'+esc(F.hint)+'</textarea>';
@@ -2815,7 +2810,7 @@ function foodPrompt(hint,hasImg){
 async function scanMeal(){
   var F=FOOD3; F.hint=($("#hint")&&$("#hint").value||"").trim();
   if(!F.file&&!F.hint){ toast("Take or choose a photo, or describe the meal"); return; }
-  if(!getKey()){ toast("Add your Anthropic API key in Settings to scan"); return; }
+  if(!aiReady()){ toast(getKey()||(typeof CLOUD!=="undefined"&&CLOUD.user())?"AI meal scan is switching on soon":"Sign in to scan meals"); return; }
   F.busy=true; F.res=null; F.err=""; F.stage=0; F.t0=performance.now(); SFX.swoosh(); rFood();
   var marks=[0,4,10,17,26];
   F.timer=setInterval(function(){ var s=(performance.now()-F.t0)/1000, st=0; marks.forEach(function(m,i){ if(s>=m) st=i; }); F.stage=st; if(VIEW==="food") drawStages(); },500);
@@ -2823,11 +2818,8 @@ async function scanMeal(){
   try{
     var content=[]; if(F.file) content.push({ type:"image", source:{ type:"base64", media_type:"image/jpeg", data:await toJpegB64(F.file) } });
     content.push({ type:"text", text:foodPrompt(F.hint,!!F.file) });
-    var res;
-    try{ res=await fetch("https://api.anthropic.com/v1/messages",{ method:"POST", signal:ctrl.signal, headers:{ "content-type":"application/json","x-api-key":getKey(),"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true" }, body:JSON.stringify({ model:getModel(), max_tokens:3000, messages:[{ role:"user", content:content }] }) }); }
-    catch(e){ throw e&&e.name==="AbortError"?{code:"timeout"}:{code:"offline"}; }
-    if(!res.ok) throw { code:res.status===401||res.status===403?"bad_key":res.status===429?"rate_limited":res.status===404?"bad_model":"upstream_error" };
-    var j=await res.json(), text=(j.content||[]).filter(function(b){ return b.type==="text"; }).map(function(b){ return b.text; }).join("").trim();
+    var j=await aiSend({ model:getModel(), max_tokens:3000, messages:[{ role:"user", content:content }] },"scan",ctrl.signal);
+    var text=(j.content||[]).filter(function(b){ return b.type==="text"; }).map(function(b){ return b.text; }).join("").trim();
     var m=text.match(/```(?:json)?\s*([\s\S]*?)```/); if(m) text=m[1];
     var a=text.indexOf("{"), b=text.lastIndexOf("}"), o=JSON.parse(text.slice(a,b+1));
     if(!o||!Array.isArray(o.items)||!o.items.length) throw {code:"invalid_json"};
@@ -2920,8 +2912,7 @@ function acctCards(){
     '<div class="setrow2"><div><b>Theme</b><span>Light glass or dark liquid glass</span></div><select id="thSel" aria-label="Theme">'+[["auto","Match phone"],["light","Light"],["dark","Dark"]].map(function(o){ return '<option value="'+o[0]+'"'+(th===o[0]?" selected":"")+'>'+o[1]+'</option>'; }).join("")+'</select></div>'+
     '<div class="setrow2"><div><b>Background music</b><span>Original Train9 theme</span></div><button class="sw" role="switch" id="muSw" aria-label="Background music" aria-checked="'+MUSIC.want()+'"></button></div>'+
     '<div class="setrow2"><div><b>Track</b><span>Both are original Train9 songs</span></div><select id="trSel" aria-label="Music track">'+Object.keys(MUSIC.tracks).map(function(k){ return '<option value="'+k+'"'+(MUSIC.track()===k?" selected":"")+'>'+MUSIC.tracks[k][1].replace("Train9 ","")+'</option>'; }).join("")+'</select></div>'+
-    '<div class="setrow2"><div><b>Sound effects</b><span>Set checks and rank-ups</span></div><button class="sw" role="switch" id="sfSw" aria-label="Sound effects" aria-checked="'+(S.profile.sound!==false)+'"></button></div>'+
-    '<div class="setrow2"><div><b>Rank-up preview</b><span>Watch the full celebration</span></div><button class="soft" id="sndTest">Play</button></div></div>';
+    '<div class="setrow2"><div><b>Sound effects</b><span>Set checks and rank-ups</span></div><button class="sw" role="switch" id="sfSw" aria-label="Sound effects" aria-checked="'+(S.profile.sound!==false)+'"></button></div>'+'</div>';
   h+='<div class="card"><h3>Notifications</h3>'+
     (ps==="granted"&&S.profile.pushOn?'<div class="setrow2"><div><b>Push notifications</b><span>On for this phone</span></div><button class="soft" id="pTest">Send test</button></div>'
       :'<div class="setrow2"><div><b>Push notifications</b><span>'+(ps==="install"?"Add Train9 to your Home Screen first":ps==="denied"?"Blocked. Allow in iPhone Settings":ps==="unsupported"?"Needs iOS 16.4 or later":"Workout reminders, new seasons, invites")+'</span></div><button class="acc" id="pOn"'+(!u||ps==="install"||ps==="unsupported"?" disabled":"")+'>Turn on</button></div>')+
@@ -2938,7 +2929,7 @@ function acctWire(){
   $("#thSel").onchange=function(){ setTheme(this.value); SFX.tap(); };
   sw("#muSw",function(v){ S.profile.music=v; saveLocal(); if(v) MUSIC.start(); else MUSIC.stop(); });
   sw("#sfSw",function(v){ S.profile.sound=v; saveLocal(); });
-  $("#sndTest").onclick=function(){ var st=LED(), i0=Math.min(20,st.idx); FX.celebrate({fromIdx:i0,fromRP:72,toIdx:i0+1,toRP:18,delta:46,xp:240}); };
+  if($("#sndTest")) $("#sndTest").onclick=function(){ var st=LED(), i0=Math.min(20,st.idx); FX.celebrate({fromIdx:i0,fromRP:72,toIdx:i0+1,toRP:18,delta:46,xp:240}); };
   if($("#pOn")) $("#pOn").onclick=function(){ CLOUD.enablePush(this); };
   if($("#pTest")) $("#pTest").onclick=function(){ CLOUD.testPush(); toast("Test sent. It should arrive in a few seconds."); };
   if($("#remH")) $("#remH").onchange=function(){ CLOUD.setPref({ reminder_hour:+this.value }); };
@@ -3025,6 +3016,58 @@ function slider(root,onDone){
   knob.addEventListener("pointerup",up); knob.addEventListener("pointercancel",up);
   knob.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "||e.key==="ArrowRight"){ e.preventDefault(); done(); } });
 }
+
+// ===================== developer mode (hidden from customers) and AI routing =====================
+function devMode(){ try{ return localStorage.getItem("t9.dev")==="1"; }catch(e){ return false; } }
+function devCard(){
+  if(!devMode()) return "";
+  var k=getKey();
+  return '<div class="card"><div class="exh"><h3>Developer</h3><button class="soft" id="devOff">Hide</button></div><p class="small muted">Only visible on this phone. Customers never see this.</p>'+
+    '<label for="aKey" style="margin-top:10px">Your Anthropic API key (this phone only)</label><input id="aKey" type="password" autocomplete="off" placeholder="sk-ant-..." value="'+esc(k)+'">'+
+    '<label for="aModel" style="margin-top:8px">Model</label><input id="aModel" type="text" value="'+esc(getModel())+'">'+
+    '<div class="row" style="margin-top:8px"><button class="pri" id="aSave">Save key</button><button id="aTest">Test</button><span class="small muted" id="aStat2">'+(k?"Key saved. AI uses your key.":"No key. AI uses the Train9 server.")+'</span></div>'+
+    '<div class="row" style="margin-top:12px"><button class="soft" id="updBtn">Check for updates</button><button class="soft" id="sndTest">Rank-up preview</button><button class="soft" id="exp">Copy all data</button></div>'+
+    '<details style="margin-top:10px"><summary class="small">Import from the Claude version</summary><textarea id="pasteIn" style="margin-top:6px"></textarea><button id="pasteGo" style="margin-top:6px">Import</button></details>'+
+    '<div class="row" style="margin-top:10px"><button class="soft danger" id="wipe">Erase all logs on this phone</button></div><div id="wipeC" class="hide row" style="margin-top:8px"><span class="small">Erase all logs on this phone?</span><button class="danger" id="wipeY">Erase</button><button id="wipeN">Cancel</button></div></div>';
+}
+function devWire(){
+  var vt=$("#vTap");
+  if(vt){ var c=0, tm=0; vt.onclick=function(){ c++; clearTimeout(tm); tm=setTimeout(function(){ c=0; },1600);
+    if(c>=7){ c=0; try{ localStorage.setItem("t9.dev", devMode()?"0":"1"); }catch(e){} SFX.complete(); toast(devMode()?"Developer mode on":"Developer mode off"); rMe(); }
+    else if(c>=4) toast((7-c)+" more taps"); }; }
+  if($("#devOff")) $("#devOff").onclick=function(){ try{ localStorage.setItem("t9.dev","0"); }catch(e){} rMe(); };
+}
+function aiErr(e){
+  var c=e&&e.code;
+  return c==="ai_off"?"AI features are switching on soon.":c==="limit"?"You've used today's AI limit. It resets tomorrow.":c==="sign_in"||c==="no_key"?"Sign in to use AI features.":c==="timeout"?"That took too long. Try again.":
+    c==="bad_key"?"The API key was rejected.":c==="bad_model"?"That model name was not found.":c==="rate_limited"?"AI is busy right now. Try again shortly.":c==="offline"?"No internet connection.":c==="image_rejected"?"That image could not be read. Try another.":"Could not get an answer. Try again.";
+}
+async function aiSend(body,kind,signal){
+  var key=getKey(), res;
+  try{
+    if(key) res=await fetch("https://api.anthropic.com/v1/messages",{ method:"POST", signal:signal, headers:{ "content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true" }, body:JSON.stringify(body) });
+    else { if(typeof CLOUD==="undefined"||!CLOUD.user()) throw {code:"sign_in"}; res=await CLOUD.ai(Object.assign({ kind:kind },body),signal); }
+  }catch(e){ if(e&&e.code) throw e; throw e&&e.name==="AbortError"?{code:"timeout"}:{code:"offline"}; }
+  if(!res.ok){
+    var s=res.status, j={}; try{ j=await res.json(); }catch(er){}
+    if(!key){ if(s===503) throw {code:"ai_off"}; if(s===429&&j.error==="limit") throw {code:"limit"}; if(s===401&&j.error==="sign_in") throw {code:"sign_in"}; }
+    throw { code:s===401||s===403?"bad_key":s===429?"rate_limited":s===404?"bad_model":"upstream_error" };
+  }
+  return res.json();
+}
+async function AI(input, opts){
+  opts=opts||{};
+  var turns=typeof input==="string"?[{role:"user",content:input}]:input.slice(), msgs=[];
+  turns.forEach(function(t){ var last=msgs[msgs.length-1]; if(last&&last.role===t.role) last.content+="\n\n"+t.content; else msgs.push({role:t.role,content:t.content}); });
+  if(opts.images&&opts.images.length){ var blocks=[]; for(var i=0;i<opts.images.length;i++) blocks.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:await toJpegB64(opts.images[i])}}); var lu=msgs[msgs.length-1]; lu.content=blocks.concat([{type:"text",text:lu.content}]); }
+  var j=await aiSend({ model:getModel(), max_tokens:opts.max||1200, messages:msgs }, opts.kind||"chat", opts.signal);
+  var text=(j.content||[]).filter(function(b){ return b.type==="text"; }).map(function(b){ return b.text; }).join("");
+  if(opts.onText) opts.onText({text:text,delta:text});
+  return {text:text};
+}
+function aiReady(){ return !!getKey()||(typeof CLOUD!=="undefined"&&CLOUD.user()&&CLOUD.aiOn()); }
+function standaloneApp(){ return window.navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches); }
+function aiRefresh(){ sampleFn=AI; imgOK=true; }
 
 // ---------- Cloud: sign-in, sync, real leaderboard, referrals, notifications (Supabase) ----------
 var CLOUD=(function(){
@@ -3217,6 +3260,9 @@ var CLOUD=(function(){
         alert("Your account and data have been deleted."); location.reload();
       }).catch(function(){ toast("Couldn't reach the server. Try again."); });
   }
+  var aiState=null;
+  function aiStatus(){ fetch(URL_+"/functions/v1/ai").then(function(r){ return r.json(); }).then(function(j){ aiState=!!j.on; if(VIEW==="food") rFood(); }).catch(function(){}); }
+  function ai(body,signal){ return sb.auth.getSession().then(function(r){ var t=r.data.session&&r.data.session.access_token; return fetch(URL_+"/functions/v1/ai",{ method:"POST", signal:signal, headers:{ "Content-Type":"application/json", Authorization:"Bearer "+t, apikey:KEY }, body:JSON.stringify(body) }); }); }
   function setPref(patch){ if(!user) return; Object.assign(prof||{},patch); sb.from("profiles").update(patch).eq("id",user.id).then(function(r){ if(!r.error) toast("Saved"); }); }
   function signOut(){
     push().then(function(){ return sb.auth.signOut(); }).then(function(){ try{ localStorage.removeItem(LS); localStorage.removeItem("t9.auth"); }catch(e){} location.reload(); });
@@ -3243,14 +3289,15 @@ var CLOUD=(function(){
     else if(!offline){ document.documentElement.classList.remove("authed"); gate(); }
     else { reveal(); afterAuth(); }
   }).catch(function(){ if(!offline&&!document.documentElement.classList.contains("authed")) gate(); });
+  aiStatus();
   if(sb) sb.auth.onAuthStateChange(function(ev){ if(ev==="SIGNED_OUT"){ user=null; } });
 
-  return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, deleteAccount:deleteAccount,
+  return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, deleteAccount:deleteAccount, ai:ai, aiOn:function(){ return aiState===true; }, aiKnown:function(){ return aiState!==null; },
     user:function(){ return user; }, prof:function(){ return prof; }, board:function(){ return board; }, refs:function(){ return refs; } };
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0053";
+var APP_VERSION="2026.11.22-0132";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
