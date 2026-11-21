@@ -1955,6 +1955,7 @@ function rMe(){
      '<label for="aModel" style="margin-top:8px">Model</label><input id="aModel" type="text" value="'+esc(getModel())+'">'+
      '<div class="row" style="margin-top:8px"><button class="pri" id="aSave">Save key</button><button id="aTest">Test</button><span class="small muted" id="aStat2">'+(k?"Key saved.":"No key yet.")+'</span></div></div>';
   h+='<div class="card"><div class="exh"><h3>Sound and haptics</h3><button class="soft" id="sndT">'+(S.profile.sound===false?"Off":"On")+'</button></div><p class="small muted">Plays the reward sound when you clear a session or rank up.</p><button class="soft" id="sndTest">Preview rank-up</button></div>';
+  h+='<div class="card"><div class="exh"><h3>App version</h3><button class="soft" id="updBtn">Check for updates</button></div><p class="small muted">Version '+esc(APP_VERSION)+'. Updates install on their own when you open the app.</p></div>';
   h+='<div class="card"><h3>Install on your phone</h3><p class="small">iPhone: open this page in Safari, tap Share, then Add to Home Screen. Android: open in Chrome, tap the menu, then Install app. It then opens like an app and works offline.</p></div>';
   h+='<div class="card"><h3>Data</h3><p class="small muted">'+esc(cloudNote)+'</p><div class="row"><button id="bak">Save backup file</button><label class="btn" style="cursor:pointer">Restore backup<input id="imp" type="file" accept=".json,application/json" class="hide"></label></div>'+
      '<details style="margin-top:8px"><summary class="small">Bring data over from the Claude version</summary><p class="small muted">In the Claude version (Physique Coach), open Me and tap Copy all data. Paste it here.</p><textarea id="pasteIn"></textarea><button id="pasteGo" style="margin-top:6px">Import</button></details>'+
@@ -1968,6 +1969,7 @@ function rMe(){
   };
   $("#exp").onclick=function(){ navigator.clipboard.writeText(JSON.stringify(S)).then(function(){ toast("Copied"); },function(){ toast("Copy was blocked"); }); };
   $("#wipe").onclick=function(){ $("#wipeC").classList.remove("hide"); };
+  $("#updBtn").onclick=function(){ UPD.check(true); };
   $("#sndT").onclick=function(){ S.profile.sound = S.profile.sound===false; saveLocal(); rMe(); };
   $("#sndTest").onclick=function(){ var st=LED(); var i0=Math.min(20,st.idx); FX.celebrate({fromIdx:i0,fromRP:72,toIdx:i0+1,toRP:18,delta:46,xp:240}); };
   $("#aSave").onclick=function(){ try{ localStorage.setItem(AIKEY,$("#aKey").value.trim()); }catch(e){} S.profile.model=$("#aModel").value.trim()||"claude-sonnet-5-5"; saveLocal(); aiRefresh(); $("#aStat2").textContent=getKey()?"Key saved.":"Key removed."; };
@@ -1983,7 +1985,7 @@ function rMe(){
 // ---------- boot ----------
 aiRefresh();
 render();
-if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){ navigator.serviceWorker.register("sw.js").catch(function(){}); }
+
 
 // ---------- figures in the UI ----------
 function mountFigs(){ document.querySelectorAll("[data-fig]").forEach(function(b){ if(b.dataset.m) return; b.dataset.m="1"; FIG.mount(b,b.dataset.fig); b.onclick=function(){ openFig(b.dataset.fig); }; }); }
@@ -2102,6 +2104,35 @@ function openReview(d,ev,st,before){
   setTimeout(function(){ var a=$("#rvRp"), x=$("#rvXp"); if(a) a.style.width=(st.idx>=21?100:Math.min(100,st.rp))+"%"; if(x) x.style.width=(lvA.into/lvA.need*100)+"%"; }, 120);
   $("#resok").onclick=function(){ if(dlg.close) dlg.close(); else dlg.removeAttribute("open"); render(); };
 }
+
+// ---------- Instant updates ----------
+var APP_VERSION="2026.11.21-1732";
+var UPD=(function(){
+  var reg=null, busy=false;
+  function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
+  function check(manual){
+    if(busy||location.protocol.indexOf("http")!==0) return Promise.resolve(false); busy=true;
+    return fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; }).then(function(j){
+      busy=false;
+      if(j&&j.v&&j.v!==APP_VERSION){
+        toast("New version found. Updating...");
+        var go=function(){ reloadOnce(j.v); };
+        if(reg){ reg.update().then(function(){ if(reg.waiting) reg.waiting.postMessage("skip"); setTimeout(go,900); }).catch(go); } else setTimeout(go,600);
+        return true;
+      }
+      if(manual) toast("You're on the latest version");
+      return false;
+    }).catch(function(){ busy=false; if(manual) toast("Can't check for updates offline"); return false; });
+  }
+  if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){
+    navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(function(r){ reg=r; }).catch(function(){});
+  }
+  document.addEventListener("visibilitychange",function(){ if(document.visibilityState==="visible") check(false); });
+  window.addEventListener("focus",function(){ check(false); });
+  setTimeout(function(){ check(false); },1500);
+  setInterval(function(){ if(document.visibilityState==="visible") check(false); },120000);
+  return { check:check };
+})();
 
 </script>
 </body>
