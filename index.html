@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Train9">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="t9-icon-180.png">
-<link rel="icon" href="t9-icon-192.png">
+<link rel="apple-touch-icon" href="t9s-icon-180.png">
+<link rel="icon" href="t9s-icon-192.png">
 <title>Train9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -384,7 +384,7 @@ nav.tabs{box-shadow:0 20px 50px -10px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,
 <body>
 <div class="wrap">
   <div class="statusbar">
-    <div class="row" style="gap:8px;flex-wrap:nowrap"><div class="avatar"><img src="t9-icon-192.png" alt=""></div><div><div class="brand">Train9</div><div class="muted small" id="sub"></div></div></div>
+    <div class="row" style="gap:8px;flex-wrap:nowrap"><div class="avatar"><img src="t9s-icon-192.png" alt=""></div><div><div class="brand">Train9</div><div class="muted small" id="sub"></div></div></div>
     <div class="topr"><button class="chip" id="wkchip" aria-label="Open ranked"></button><button class="gear" id="gear" aria-label="Settings and profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
   </div>
   <main>
@@ -2142,7 +2142,7 @@ function openReview(d,ev,st,before){
 }
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.21-1833";
+var APP_VERSION="2026.11.21-1836";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
