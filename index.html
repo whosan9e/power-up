@@ -1153,7 +1153,7 @@ var STYLES = [
 // ----- curvy shape styles (18+ only) -----
 STYLES.push(
  { id: "hourglass", sex: "f", adult: true, name: "Hourglass", kind: "Curves and shape", line: "Bigger glutes, strong upper body, smaller-looking waist",
-   goal: "lean", rules: ["Glutes twice a week, about 10 to 20 hard sets. More sets usually mean more growth, but each extra set adds a little less.", "Hip thrusts and squats both build glute size. Hip abduction may add more to the upper glute.", "Shoulders and back widen the upper body so the waist looks smaller. Chest training builds the muscle under the breast but does not grow breast tissue.", "Ab work will not burn waist fat. A smaller-looking waist comes from overall fat loss and bigger glutes."],
+   goal: "lean", rules: ["Glutes twice a week, about 10 to 20 hard sets. More sets usually mean more growth, but each extra set adds a little less.", "Hip thrusts and squats both build glute size. Hip abduction may add more to the upper glute.", "Shoulders and back widen the upper body so the waist looks smaller. Chest training builds the muscle under the breast but does not grow breast tissue.", "Ab work will not burn waist fat. A smaller-looking waist comes mostly from overall fat loss, and bigger glutes may add to the shape."],
    days: [
    D("Glutes, heavy", "Heavy hip thrusts and hinges for glute size.", [
      ["Barbell hip thrust","4 x 6–10","2 min","Chin tucked, pause and squeeze at the top."],
@@ -3224,8 +3224,8 @@ function openReports(){
 
 // ===================== focus areas: popular picks per sex, or any muscle (custom) =====================
 var FOCUS={
-  f:[["glutes","Bigger glutes","Glute strength","Hip thrusts on lower days",0],["quads","Shaped legs","Legs","Leg extensions on lower days",0],["waist","Core and waist","Core strength","Core stability work. A smaller-looking waist comes from fat loss and bigger glutes, not ab work.",0],
-     ["shoulders","Toned arms and shoulders","Arms and shoulders","Lateral raises on upper days",0],["chest","Chest and posture","Chest","Builds the chest muscle under the breast and helps posture. It does not grow breast tissue.",0],["back","Toned back","Back","Pulldowns on upper days",0]],
+  f:[["glutes","Bigger glutes","Glute strength","Hip thrusts on lower days",0],["quads","Shaped legs","Legs","Leg extensions on lower days",0],["waist","Core and waist","Core strength","Core stability work. A smaller-looking waist comes mostly from overall fat loss, not ab work.",0],
+     ["shoulders","Toned arms and shoulders","Arms and shoulders","Lateral raises on upper days",0],["chest","Chest","Chest","Incline presses on upper days",0],["back","Toned back","Back","Pulldowns on upper days",0]],
   m:[["chest","Bigger chest","Chest","Incline presses on upper days",0],["biceps","Bigger arms","Arms","Curls on upper days",0],["back","Wide back (lats)","Back","Pulldowns on upper days",0],
      ["shoulders","Bigger shoulders","Shoulders","Lateral raises on upper days",0],["quads","Bigger legs","Legs","Extra quad work on lower days",0],["abs","Abs and core","Core","Builds the abs. They show once body fat is low.",0]]
 };
@@ -3264,7 +3264,7 @@ function applyFocus(days){
     var pick=match.length>cap?[0,1,2].slice(0,cap).map(function(j){ return match[Math.round(j*(match.length-1)/(cap-1))]; }):match.slice();
     if(pick.length<2) tr.filter(function(i){ return pick.indexOf(i)<0; }).sort(function(x,y){ return added[x]-added[y]; }).slice(0,2-pick.length).forEach(function(i){ pick.push(i); });
     pick.forEach(function(i){ var d=out[i]; if(d.ex.some(function(x){ return x.n===e.n; })) return;
-      out[i]=Object.assign({},d,{ ex:d.ex.concat([{ n:e.n, sets:e.sets, rest:e.rest, cue:e.cue, tag:"Focus" }]) }); added[i]++; });
+      out[i]=Object.assign({},d,{ ex:d.ex.concat([{ n:e.n, sets:isAdult()?e.sets:"2 x 10–15", rest:e.rest, cue:isAdult()?e.cue:e.cue+" Stop 2 to 3 reps before failure.", tag:"Focus" }]) }); added[i]++; });
   });
   return out;
 }
@@ -3282,8 +3282,8 @@ function focusPicker(sx,adult,sel,openCustom){
   return '<div class="fchips">'+rec.map(function(f){ return '<button class="fchip" data-fo="'+f.id+'" aria-pressed="'+(sel.indexOf(f.id)>=0)+'" title="'+esc(f.desc)+'">'+esc(f.label)+'</button>'; }).join("")+'</div>'+
     '<button class="glink" data-fcustom="1" style="margin:8px 0 0;padding-left:0">'+(custom?"Hide custom":"Custom: pick any muscle")+'</button>'+
     (custom?'<div class="fchips">'+MUSCLES.map(function(m){ return '<button class="fchip" data-fo="'+m[0]+'" aria-pressed="'+(sel.indexOf(m[0])>=0)+'">'+m[1]+'</button>'; }).join("")+'</div>':'')+
-    (sx==="f"&&sel.indexOf("chest")>=0?'<p class="note">Chest training builds the muscle under the breast and helps posture. It does not grow breast tissue, and losing body fat can make breasts a little smaller.</p>':'')+
-    '<p class="note">Each focus adds one exercise on 2 or 3 days, about 6 to 9 extra hard sets a week (hard means 1 to 3 reps short of failure). More weekly sets usually build more muscle, but each extra set adds a bit less, and past about 20 sets a week the gain is small (Pelland 2026).</p>';
+    (sx==="f"&&adult&&sel.indexOf("chest")>=0?'<p class="note">Chest training builds the muscle under the breast. It does not grow breast tissue, and losing body fat can make breasts a little smaller.</p>':'')+
+    (adult?'<p class="note">Each focus adds one exercise on 2 or 3 days, about 6 to 9 extra hard sets a week (hard means 1 to 3 reps short of failure). More weekly sets usually build more muscle, but each extra set adds a bit less, and past about 20 sets a week the gain is small (Pelland 2026).</p>':'<p class="note">Each focus adds one exercise on 2 or 3 days, 2 sets each. Learn the form first and stop each set 2 to 3 reps before you could not do another. Train with an adult who knows lifting.</p>');
 }
 var _focusCustom=false;
 function focusCard(){
@@ -3528,7 +3528,7 @@ var CLOUD=(function(){
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0230";
+var APP_VERSION="2026.11.22-0241";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
