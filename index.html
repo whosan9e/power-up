@@ -669,6 +669,10 @@ details.rep{border-top:1px solid var(--line);padding:10px 0}
 details.rep summary{list-style:none;cursor:pointer}
 details.rep summary::-webkit-details-marker{display:none}
 input[type=checkbox],input[type=radio]{-webkit-appearance:auto;appearance:auto;width:20px;height:20px;min-height:0;padding:0;accent-color:var(--v);flex:0 0 auto}
+.fchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.fchip{min-height:42px;padding:8px 14px;border-radius:999px;font-size:14px}
+.fchip[aria-pressed=true]{background:var(--vt2);border-color:var(--v);color:var(--ink);box-shadow:inset 0 0 0 1px var(--v)}
+.ostep.still{animation:none}
 </style>
 </head>
 <body>
@@ -1145,6 +1149,62 @@ var STYLES = [
      ["Standing calf raise","3 x 12","60 s","Pause at the bottom."]])
    ] }
 ];
+
+// ----- curvy shape styles (18+ only) -----
+STYLES.push(
+ { id: "hourglass", sex: "f", adult: true, name: "Hourglass", kind: "Curves and shape", line: "Bigger rounder glutes, lifted chest look, snatched waist",
+   goal: "lean", rules: ["Glutes three times a week, 10 to 20 hard sets in total, the range linked to the most growth.", "Hip thrusts and Romanian deadlifts build glute size. Split squats shape the upper glute.", "Chest, shoulders and back give a lifted, hourglass upper body. Training builds the muscle under breast tissue for a fuller look, but it can't change breast size.", "No heavy oblique work, so the waist stays tight."],
+   days: [
+   D("Glutes, heavy", "Heavy hip thrusts and hinges for glute size.", [
+     ["Barbell hip thrust","4 x 6–10","2 min","Chin tucked, pause and squeeze at the top."],
+     ["Romanian deadlift","3 x 8–10","2 min","Hips back until you feel the hamstrings, then drive the hips forward."],
+     ["Bulgarian split squat","3 x 8–10 each","90 s","Lean forward slightly to bias the glutes."],
+     ["Hip abduction machine","3 x 15–20","45 s","Lean forward a little and hold the last rep."]]),
+   D("Upper, lifted chest look", "Chest muscle, shoulders and posture for a fuller, lifted look.", [
+     ["Incline dumbbell press","4 x 8–12","90 s","Slow lowering to a deep stretch."],
+     ["Pec deck","3 x 12–15","60 s","Hug the arms together and pause."],
+     ["Lat pulldown","3 x 10–12","90 s","Elbows to the hips, chest up."],
+     ["Lateral raise","3 x 15","60 s","Lead with the elbows."],
+     ["Face pull","3 x 15","60 s","Pull to the eyes, squeeze the upper back."]]),
+   D("Glutes and hamstrings", "Volume and pump for shape.", [
+     ["Hip thrust, single leg","3 x 10–12 each","90 s","Pause at the top."],
+     ["Reverse lunge","3 x 10 each","90 s","Long step back, push through the front heel."],
+     ["Lying leg curl","3 x 12","60 s","Slow on the way down."],
+     ["Cable kickback","3 x 15 each","45 s","Squeeze at the back, don't arch."],
+     ["Banded side walk","3 x 20 steps","45 s","Stay low, toes forward."]]),
+   D("Upper and waist", "Back width and a tight core make the waist look smaller.", [
+     ["Seated cable row","3 x 10–12","90 s","Tall chest, pull to the belly button."],
+     ["Dumbbell shoulder press","3 x 8–12","90 s","Controlled, no arching."],
+     ["Single-arm dumbbell row","3 x 10 each","60 s","Elbow to the hip."],
+     ["Pallof press","3 x 12 each","45 s","Resist the twist, ribs down."],
+     ["Stomach vacuum","3 x 20 s","45 s","Exhale fully, pull the belly button in and hold."]])
+   ] },
+ { id: "glutespec", sex: "f", adult: true, name: "Glute Specialist", kind: "Glute growth focus", line: "Four glute days from every angle",
+   goal: "lean", rules: ["Glutes four days a week from different angles: thrust, hinge, squat and abduction.", "Most sets 1 to 3 reps short of failure. Add load once you hit the top of the rep range.", "One upper day keeps your shoulders and back in proportion."],
+   days: [
+   D("Glutes, thrust", "Heavy thrusts first.", [
+     ["Barbell hip thrust","4 x 8–12","2 min","Pause and squeeze at the top."],
+     ["Bulgarian split squat","3 x 10 each","90 s","Slight forward lean."],
+     ["Cable kickback","3 x 15 each","45 s","Squeeze at the back."],
+     ["Hip abduction machine","3 x 20","45 s","Hold the last rep."]]),
+   D("Upper body", "Shoulders and back in proportion.", [
+     ["Lat pulldown","3 x 10–12","90 s","Stretch at the top."],
+     ["Incline dumbbell press","3 x 10","90 s","Slow lowering."],
+     ["Seated cable row","3 x 12","90 s","Tall chest."],
+     ["Lateral raise","3 x 15","60 s","Lead with the elbows."],
+     ["Triceps pushdown","3 x 12","60 s","Elbows pinned."]]),
+   D("Glutes, hinge", "Hinges for the lower glute and hamstrings.", [
+     ["Romanian deadlift","4 x 8–10","2 min","Hips back, flat back."],
+     ["Single-leg Romanian deadlift","3 x 10 each","90 s","Square hips."],
+     ["Lying leg curl","3 x 12","60 s","Slow lowering."],
+     ["Banded side walk","3 x 20 steps","45 s","Stay low."]]),
+   D("Glutes, squat", "Deep knee bends for the whole glute.", [
+     ["Hack squat","4 x 8–12","2 min","Feet high and wide, sink deep."],
+     ["Reverse lunge","3 x 10 each","90 s","Long step."],
+     ["Hip thrust, single leg","3 x 12 each","60 s","Pause at the top."],
+     ["Hip abduction machine","3 x 20","45 s","Slow."]])
+   ] }
+);
 
 // ---------- Animated exercise figures ----------
 // Side-view figure facing right. Angles in degrees.
@@ -2100,7 +2160,7 @@ function exHtml(e){
 function rPlan(){
   var st=styleById(S.profile.style), w=planWeek||weekFor(today()), ridx=LED().idx, days=(w==="A"?weekA(st):weekB()).map(function(d){ return scaleDay(d,ridx); }), dif=DIFF[Math.min(7,Math.floor(ridx/3))];
   var h='<div class="row"><div class="seg" role="group" aria-label="Physique group"><button data-sx="m" aria-pressed="'+(sex==="m")+'">Male</button><button data-sx="f" aria-pressed="'+(sex==="f")+'">Female</button></div></div>';
-  h+='<h2>Choose your style</h2><div class="styles">'+STYLES.filter(function(s){ return s.sex===sex; }).map(function(s){ return '<button class="style" data-st="'+s.id+'" aria-pressed="'+(s.id===st.id)+'"><b>'+esc(s.name)+'</b><span>'+esc(s.kind)+'</span><span>'+esc(s.line)+'</span></button>'; }).join("")+'</div>';
+  h+='<h2>Choose your style</h2><div class="styles">'+STYLES.filter(function(s){ return s.sex===sex&&(!s.adult||isAdult()); }).map(function(s){ return '<button class="style" data-st="'+s.id+'" aria-pressed="'+(s.id===st.id)+'"><b>'+esc(s.name)+'</b><span>'+esc(s.kind)+'</span><span>'+esc(s.line)+'</span></button>'; }).join("")+'</div>'+focusCard();
   h+='<div class="card"><h3>'+esc(st.name)+' style rules</h3><ul class="small">'+st.rules.map(function(r){ return '<li>'+esc(r)+'</li>'; }).join("")+'</ul><p class="small muted">Week B is the same for every style: bodyweight tendon work you can do at home. Characters and athletes are inspiration for the training style only. Real results depend on height, genetics, years of training and, for some pros, drugs.</p></div>';
   h+='<div class="row" style="margin-top:14px"><div class="seg" role="group" aria-label="Week"><button data-wk="A" aria-pressed="'+(w==="A")+'">Week A · gym</button><button data-wk="B" aria-pressed="'+(w==="B")+'">Week B · home tendons</button></div></div>';
   h+='<div class="card rankmod">'+badgeSVG(ridx,44,{glow:false})+'<div><b>'+esc(rankLabel(ridx))+' difficulty</b><div class="small muted">'+esc(dif.note)+' Effort: '+esc(dif.rir)+'. Zone 2: '+dif.z2+' min. Intervals: '+dif.iv+' rounds. Holds: '+esc(dif.hold)+'.</div></div></div>';
@@ -2111,7 +2171,7 @@ function rPlan(){
   h+='<h2>The science</h2><div class="card">'+SCIENCE.concat(CLAIMS.map(function(c){ return {t:c.t,g:c.g,s:c.s,u:c.u}; })).map(function(c){
     var gc=c.g==="Moderate"?"g1":c.g==="Low"?"g2":"g3";
     return '<div class="ev"><div class="exh"><b>'+esc(c.t)+'</b><span class="g '+gc+'">'+esc(c.g)+'</span></div><div class="small">'+esc(c.s)+'</div><div class="small muted">'+esc(c.u)+'</div></div>'; }).join("")+'</div>';
-  $("#v-plan").innerHTML=h;
+  $("#v-plan").innerHTML=h; focusWire();
   document.querySelectorAll("[data-sx]").forEach(function(b){ b.onclick=function(){ sex=b.dataset.sx; rPlan(); }; });
   document.querySelectorAll("[data-wk]").forEach(function(b){ b.onclick=function(){ planWeek=b.dataset.wk; rPlan(); }; });
   document.querySelectorAll("[data-st]").forEach(function(b){ b.onclick=function(){ var s=styleById(b.dataset.st); S.profile.style=s.id; if(!S.profile.goalSet) S.profile.goal=s.goal; S.profile.sex=s.sex; mark("profile"); render(); toast(s.name+" style selected"); }; });
@@ -2950,14 +3010,14 @@ function acctWire(){
 var GOALS=[["bulk","Build size","Add muscle with a calorie surplus"],["lean","Lean muscle","Add muscle while staying lean"],["recomp","Recomp","Lose fat and build muscle together"],["cut","Get shredded","Lose fat while keeping muscle"]];
 function afterAuth(){ LOADER.done.then(function(){ if(!S.profile.onboarded&&!document.getElementById("onb")&&!document.getElementById("gate")) ONB.start(); }); }
 var ONB=(function(){
-  var el=null, i=0, dir=1, A={}, STEPS=["sex","age","height","weight","goal","style"];
+  var el=null, i=0, dir=1, A={}, custom=false, STEPS=["sex","age","height","weight","goal","focus","style"];
   function start(){
     if(document.getElementById("onb")) return;
-    var p=S.profile; A={ sex:p.sex==="f"?"f":(p.sex==="m"?"m":""), age:+p.age||22, height:+p.height||178, weight:+p.weight||75, goal:p.goal||"", style:p.style||"" };
+    var p=S.profile; A={ sex:p.sex==="f"?"f":(p.sex==="m"?"m":""), age:+p.age||22, height:+p.height||178, weight:+p.weight||75, goal:p.goal||"", style:p.style||"", focus:(p.focus||[]).slice() }; custom=false;
     if(!p.onbSeen){ A.sex=""; A.goal=""; A.style=""; }
     i=0; el=document.createElement("div"); el.id="onb"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-label","Set up your plan"); document.body.appendChild(el); draw();
   }
-  function valid(){ var s=STEPS[i]; return s==="sex"?!!A.sex:s==="goal"?!!A.goal&&!(A.goal==="cut"&&A.age<18):s==="style"?!!A.style&&styleById(A.style).sex===A.sex:true; }
+  function valid(){ var s=STEPS[i]; return s==="sex"?!!A.sex:s==="goal"?!!A.goal&&!(A.goal==="cut"&&A.age<18):s==="style"?!!A.style&&styleById(A.style).sex===A.sex&&(!styleById(A.style).adult||A.age>=18):true; }
   function rng(k,min,max,step,unit,alt){ var v=A[k], p=(v-min)/(max-min)*100;
     return '<div class="onum"><input id="oN" inputmode="decimal" value="'+v+'" aria-label="'+unit+'"><span>'+unit+'</span></div><div class="oalt" id="oAlt">'+(alt?alt(v):"")+'</div>'+
       '<div class="orng"><button data-nd="'+(-step)+'" aria-label="Less">−</button><input type="range" id="oR" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" style="--p:'+p+'%" aria-label="'+unit+'"><button data-nd="'+step+'" aria-label="More">+</button></div>'; }
@@ -2971,17 +3031,21 @@ var ONB=(function(){
     if(s==="weight") return '<h1 class="oq">What do you weigh?</h1><p class="osub">Your starting point. Log it each morning to track the trend.</p>'+rng("weight",30,200,0.5,"kg",function(v){ return Math.round(v*2.2046)+" lb"; });
     if(s==="goal") return '<h1 class="oq">What do you want from this journey?</h1><p class="osub">Pick the main goal. You can change it later.</p><div class="opts">'+
       GOALS.map(function(g){ var off=g[0]==="cut"&&A.age<18; return '<button class="opt" data-v="'+g[0]+'" aria-pressed="'+(A.goal===g[0])+'"'+(off?" disabled":"")+'><div><b>'+g[1]+'</b><span>'+(off?"Not available under 18. Growing bodies need enough energy.":g[2])+'</span></div></button>'; }).join("")+'</div>';
-    if(s==="style"){ var list=STYLES.filter(function(x){ return x.sex===A.sex; });
+    if(s==="focus") return '<h1 class="oq">What do you want to grow most?</h1><p class="osub">Popular picks first. Tap Custom to choose any muscle. Pick up to '+FOCUS_MAX+', or skip.</p>'+focusPicker(A.sex||"m",A.age>=18,A.focus,custom);
+    if(s==="style"){ var list=STYLES.filter(function(x){ return x.sex===A.sex&&(!x.adult||A.age>=18); });
       return '<h1 class="oq">Pick your physique</h1><p class="osub">Unique fitness levels inspired by fictional and real physiques. Each one has its own training style.</p><div class="ostyles">'+
         list.map(function(x){ return '<button class="opt" data-v="'+x.id+'" aria-pressed="'+(A.style===x.id)+'"><div><b>'+esc(x.name)+'</b><span>'+esc(x.line)+'</span></div></button>'; }).join("")+'</div>'; }
   }
   function ageNote(){ var n=$("#oAgeNote"); if(!n) return; n.innerHTML=A.age<13?'<div class="onote">Under 13: we focus on bodyweight skills and technique. Lift weights only with an adult coaching you.</div>':A.age<18?'<div class="onote">Under 18: your targets stay growth-friendly. Check with a parent, coach or doctor before heavy lifting.</div>':""; }
   function draw(){
     el.innerHTML='<div class="obar"><button class="ibtn" id="oBack" aria-label="Back"'+(i===0?' style="visibility:hidden"':'')+'>'+CHEV_L+'</button><div class="odots" aria-label="Step '+(i+1)+' of '+STEPS.length+'">'+STEPS.map(function(_,k){ return '<i class="'+(k===i?"on":k<i?"past":"")+'"></i>'; }).join("")+'</div><span></span></div>'+
-      '<div class="obody"><div class="ostep'+(dir<0?" back":"")+'">'+body()+'</div></div><div class="ofoot"><button class="acc big" id="oNext"'+(valid()?"":" disabled")+'>'+(i===STEPS.length-1?"Finish":"Continue")+'</button></div>';
+      '<div class="obody"><div class="ostep'+(dir<0?" back":dir===0?" still":"")+'">'+body()+'</div></div><div class="ofoot"><button class="acc big" id="oNext"'+(valid()?"":" disabled")+'>'+(i===STEPS.length-1?"Finish":"Continue")+'</button></div>';
     $("#oBack").onclick=function(){ if(i>0){ i--; dir=-1; SFX.tap(); draw(); } };
     $("#oNext").onclick=next;
-    el.querySelectorAll(".opt[data-v]").forEach(function(b){ b.onclick=function(){ var s=STEPS[i]; A[s]=b.dataset.v; if(s==="sex"&&A.style&&styleById(A.style).sex!==A.sex) A.style=""; SFX.check(i); el.querySelectorAll(".opt[data-v]").forEach(function(x){ x.setAttribute("aria-pressed",String(x===b)); }); $("#oNext").disabled=!valid(); if(s==="sex"||s==="goal") setTimeout(next,260); }; });
+    el.querySelectorAll(".opt[data-v]").forEach(function(b){ b.onclick=function(){ var s=STEPS[i]; A[s]=b.dataset.v; if(s==="sex"){ if(A.style&&styleById(A.style).sex!==A.sex) A.style=""; A.focus=[]; } SFX.check(i); el.querySelectorAll(".opt[data-v]").forEach(function(x){ x.setAttribute("aria-pressed",String(x===b)); }); $("#oNext").disabled=!valid(); if(s==="sex"||s==="goal") setTimeout(next,260); }; });
+    el.querySelectorAll("[data-fo]").forEach(function(b){ b.onclick=function(){ toggleFocus(A.focus,b.dataset.fo); SFX.tap(); dir=0; draw(); }; });
+    var fcb=el.querySelector("[data-fcustom]"); if(fcb) fcb.onclick=function(){ custom=!custom; dir=0; draw(); };
+    if(STEPS[i]==="focus") $("#oNext").textContent=A.focus.length?"Continue":"Skip";
     var R=$("#oR"), N=$("#oN");
     if(R){ var k=STEPS[i], mn=+R.min, mx=+R.max, st=+R.step;
       var set=function(v,from){ v=Math.max(mn,Math.min(mx,Math.round(v/st)*st)); A[k]=v; if(from!=="r") R.value=v; if(from!=="n") N.value=v; N.style.width=(String(v).length+0.4)+"ch"; R.style.setProperty("--p",((v-mn)/(mx-mn)*100)+"%"); var alt=$("#oAlt"); if(alt) alt.textContent=k==="height"?ftin(v):k==="weight"?Math.round(v*2.2046)+" lb":""; if(k==="age"){ ageNote(); if(A.goal==="cut"&&v<18) A.goal=""; } };
@@ -2992,7 +3056,7 @@ var ONB=(function(){
   }
   function next(){ if(!valid()) return; if(i<STEPS.length-1){ i++; dir=1; draw(); return; } finish(); }
   function finish(){
-    var p=S.profile; p.sex=A.sex; p.age=A.age; p.height=A.height; p.weight=A.weight; p.goal=A.goal; p.style=A.style; p.onboarded=true; p.onbSeen=true;
+    var p=S.profile; p.sex=A.sex; p.age=A.age; p.height=A.height; p.weight=A.weight; p.goal=A.goal; p.style=A.style; p.focus=A.focus.slice(0,FOCUS_MAX); p.onboarded=true; p.onbSeen=true;
     if(!(p.weights||[]).some(function(w){ return w.d===today(); })) p.weights=(p.weights||[]).concat([{ d:today(), w:A.weight }]);
     sex=A.sex; mark("profile"); SFX.complete();
     el.classList.add("out"); setTimeout(function(){ el.remove(); },460); render(); CONGRATS.show();
@@ -3156,6 +3220,75 @@ function openReports(){
     }).join("");
     el.querySelectorAll("[data-rs]").forEach(function(b){ b.onclick=function(){ var p=b.dataset.rs.split("|"); CLOUD.setReport(+p[0],p[1]).then(function(){ toast("Marked "+p[1]); openReports(); }); }; });
   });
+}
+
+// ===================== focus areas: popular picks per sex, or any muscle (custom) =====================
+var FOCUS={
+  f:[["glutes","Bigger glutes","Glute strength","Hip thrusts on lower days",0],["quads","Shaped legs","Legs","Leg extensions on lower days",0],["waist","Snatched waist and core","Core strength","Deep core work, no bulky obliques",0],
+     ["shoulders","Toned arms and shoulders","Arms and shoulders","Lateral raises on upper days",0],["chest","Lifted chest look","","Builds the chest muscle under breast tissue and improves posture. Training can't change breast size.",1],["back","Toned back","Back","Pulldowns on upper days",0]],
+  m:[["chest","Bigger chest","Chest","Incline presses on upper days",0],["biceps","Bigger arms","Arms","Curls on upper days",0],["back","Wide back, V-taper","Back","Pulldowns on upper days",0],
+     ["shoulders","Capped shoulders","Shoulders","Lateral raises on upper days",0],["quads","Bigger legs","Legs","Extra quad work on lower days",0],["abs","Visible abs","Core","Weighted ab work",0]]
+};
+var MUSCLES=[["glutes","Glutes"],["quads","Quads"],["hamstrings","Hamstrings"],["calves","Calves"],["chest","Chest"],["back","Back"],["shoulders","Shoulders"],["biceps","Biceps"],["triceps","Triceps"],["forearms","Forearms"],["traps","Traps"],["abs","Abs"],["waist","Deep core"]];
+var FOCUS_EX={
+  glutes:{n:"Hip thrust (focus)",sets:"3 x 10–15",rest:"90 s",cue:"Extra glute volume for your focus. Pause and squeeze at the top.",r:"lower"},
+  quads:{n:"Leg extension (focus)",sets:"3 x 12–15",rest:"60 s",cue:"Pause at the top, slow on the way down.",r:"lower"},
+  hamstrings:{n:"Lying leg curl (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Hips pressed down, slow lowering.",r:"lower"},
+  calves:{n:"Standing calf raise (focus)",sets:"4 x 10–15",rest:"60 s",cue:"Full stretch at the bottom, pause at the top.",r:"lower"},
+  chest:{n:"Incline dumbbell press (focus)",sets:"3 x 8–12",rest:"90 s",cue:"Extra chest volume for your focus. Slow lowering to a deep stretch.",r:"upper"},
+  back:{n:"Lat pulldown (focus)",sets:"3 x 10–12",rest:"90 s",cue:"Elbows to the hips, stretch at the top.",r:"upper"},
+  shoulders:{n:"Lateral raise (focus)",sets:"3 x 15",rest:"60 s",cue:"Lead with the elbows. Slow on the way down.",r:"upper"},
+  biceps:{n:"Incline dumbbell curl (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Full stretch at the bottom. No swinging.",r:"upper"},
+  triceps:{n:"Overhead triceps extension (focus)",sets:"3 x 10–12",rest:"60 s",cue:"Deep stretch behind the head, elbows in.",r:"upper"},
+  forearms:{n:"Reverse curl (focus)",sets:"3 x 12–15",rest:"45 s",cue:"Palms down, slow lowering.",r:"upper"},
+  traps:{n:"Dumbbell shrug (focus)",sets:"3 x 12–15",rest:"60 s",cue:"Straight up, pause at the top.",r:"upper"},
+  abs:{n:"Ab wheel rollout (focus)",sets:"3 x 8–12",rest:"60 s",cue:"Ribs down. Roll only as far as you can hold a flat back.",r:"any"},
+  waist:{n:"Pallof press (focus)",sets:"3 x 12 each",rest:"45 s",cue:"Resist the twist, ribs down, slow breathing.",r:"any"}
+};
+var FOCUS_MAX=3;
+function isAdult(){ return num(S.profile.age)>=18; }
+function focusList(sx,adult){ return (FOCUS[sx]||FOCUS.m).filter(function(f){ return adult||!f[4]; }).map(function(f){ return { id:f[0], label:(adult||!f[2])?f[1]:f[2], desc:f[3] }; }); }
+function focusLabel(id,sx,adult){ var r=focusList(sx,adult).find(function(f){ return f.id===id; }); if(r) return r.label; var m=MUSCLES.find(function(x){ return x[0]===id; }); return m?m[1]:id; }
+function toggleFocus(arr,k){ var i=arr.indexOf(k); if(i>=0) arr.splice(i,1); else { if(arr.length>=FOCUS_MAX) arr.shift(); arr.push(k); } return arr; }
+function dayRegion(d){ var lo=0, up=0; d.ex.forEach(function(e){ var m=muscleOf(e.n); if(/glutes|quads|hamstrings|calves/.test(m)) lo++; else if(/chest|back|shoulders|biceps|triceps|forearms/.test(m)) up++; }); return lo>up?"lower":up>lo?"upper":"mixed"; }
+function applyFocus(days){
+  var fs=(S.profile.focus||[]).filter(function(k){ return FOCUS_EX[k]; }).slice(0,FOCUS_MAX), anyN=0;
+  if(!fs.length) return days;
+  return days.map(function(d){
+    if(d.cardioDay||d.tendon||!d.ex||!d.ex.length) return d;
+    var reg=dayRegion(d), add=[], usedAny=false;
+    fs.forEach(function(k){ var e=FOCUS_EX[k], fit=e.r===reg||(reg==="mixed"&&e.r!=="any")||(e.r==="any"&&anyN<2);
+      if(fit&&!d.ex.some(function(x){ return x.n===e.n; })){ add.push({ n:e.n, sets:e.sets, rest:e.rest, cue:e.cue, tag:"Focus" }); if(e.r==="any") usedAny=true; } });
+    if(usedAny) anyN++;
+    return add.length?Object.assign({},d,{ ex:d.ex.concat(add) }):d;
+  });
+}
+function weekA(st){
+  if(st.adult&&!isAdult()) st=styleById(st.sex==="f"?"patty":"toji");
+  var days;
+  if(st.fromV2) days=V2.A.days.map(function(d){ return { dow:d.dow, title:d.title, focus:d.focus, warm:d.warm, ex:d.ex }; });
+  else { var dows=[0,1,3,4]; days=st.days.map(function(d,i){ return { dow:dows[i], title:d.title, focus:d.focus, ex:d.ex }; }); }
+  if(!days.some(function(d){ return d.dow===2; })) days.push(Object.assign({dow:2},CARDIO_DAYS.cond));
+  days.push(Object.assign({dow:5},CARDIO_DAYS.z2));
+  return applyFocus(days.sort(function(a,b){ return a.dow-b.dow; }));
+}
+function focusPicker(sx,adult,sel,openCustom){
+  var rec=focusList(sx,adult), recIds=rec.map(function(f){ return f.id; }), custom=openCustom||sel.some(function(k){ return recIds.indexOf(k)<0; });
+  return '<div class="fchips">'+rec.map(function(f){ return '<button class="fchip" data-fo="'+f.id+'" aria-pressed="'+(sel.indexOf(f.id)>=0)+'" title="'+esc(f.desc)+'">'+esc(f.label)+'</button>'; }).join("")+'</div>'+
+    '<button class="glink" data-fcustom="1" style="margin:8px 0 0;padding-left:0">'+(custom?"Hide custom":"Custom: pick any muscle")+'</button>'+
+    (custom?'<div class="fchips">'+MUSCLES.map(function(m){ return '<button class="fchip" data-fo="'+m[0]+'" aria-pressed="'+(sel.indexOf(m[0])>=0)+'">'+m[1]+'</button>'; }).join("")+'</div>':'')+
+    (sx==="f"&&sel.indexOf("chest")>=0?'<p class="note">Training builds the chest muscle under breast tissue and improves posture for a fuller, lifted look. It can\'t change breast size.</p>':'')+
+    '<p class="note">Each focus adds about 3 to 6 extra hard sets a week for that muscle. More weekly sets build more muscle, with smaller returns past about 20 (Pelland 2026, Schoenfeld 2017).</p>';
+}
+var _focusCustom=false;
+function focusCard(){
+  var sx=S.profile.sex==="f"?"f":"m";
+  return '<div class="card" id="focusCard"><div class="exh"><h3>Focus areas</h3><span class="small muted">Up to '+FOCUS_MAX+'</span></div><p class="small muted" style="margin-bottom:6px">Popular picks first, or go custom.</p>'+focusPicker(sx,isAdult(),S.profile.focus||[],_focusCustom)+'</div>';
+}
+function focusWire(){
+  var c=document.getElementById("focusCard"); if(!c) return;
+  c.querySelectorAll("[data-fo]").forEach(function(b){ b.onclick=function(){ S.profile.focus=toggleFocus((S.profile.focus||[]).slice(),b.dataset.fo); mark("profile"); SFX.tap(); var y=window.scrollY; rPlan(); window.scrollTo(0,y); }; });
+  var cb=c.querySelector("[data-fcustom]"); if(cb) cb.onclick=function(){ _focusCustom=!_focusCustom; var y=window.scrollY; rPlan(); window.scrollTo(0,y); };
 }
 
 // ---------- Cloud: sign-in, sync, real leaderboard, referrals, notifications (Supabase) ----------
@@ -3390,7 +3523,7 @@ var CLOUD=(function(){
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0147";
+var APP_VERSION="2026.11.22-0204";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
