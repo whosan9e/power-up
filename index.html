@@ -2500,30 +2500,26 @@ var SFX=(function(){
   };
 })();
 
-// ---------- background music: original Train9 theme, gapless loop ----------
+// ---------- background music: original Train9 theme, streamed and looped ----------
 var MUSIC=(function(){
-  var buf=null, src=null, g=null, loading=null, on=false, resume=false, VOL=0.3;
+  var el=null, node=null, g=null, routed=false, on=false, resume=false, VOL=0.34, SRC="t9-theme2.m4a";
   function want(){ return S.profile.music!==false; }
   function A(){ try{ return FX.unlock&&FX.unlock(); }catch(e){ return null; } }
-  function fetchBuf(){ if(!loading) loading=fetch("t9-theme.m4a").then(function(r){ if(!r.ok) throw new Error("no music"); return r.arrayBuffer(); }); return loading; }
-  function decode(ab){ var a=A(); return new Promise(function(res,rej){ a.decodeAudioData(ab.slice(0),res,rej); }); }
-  function start(){
-    if(on||!want()) return; var a=A(); if(!a) return; on=true;
-    (buf?Promise.resolve(buf):fetchBuf().then(decode).then(function(b){ buf=b; return b; })).then(function(b){
-      if(!on||src) return; src=a.createBufferSource(); src.buffer=b; src.loop=true; if(b.duration>81){ src.loopStart=0.5; src.loopEnd=80.5; } g=a.createGain();
-      g.gain.setValueAtTime(0.0001,a.currentTime); g.gain.exponentialRampToValueAtTime(VOL,a.currentTime+3); src.connect(g); g.connect(a.destination); src.start();
-    }).catch(function(){ on=false; });
-    btn();
-  }
-  function stop(){ on=false; var a=A(), s=src, gg=g; src=null; if(gg&&a){ gg.gain.cancelScheduledValues(a.currentTime); gg.gain.setValueAtTime(Math.max(0.0001,gg.gain.value),a.currentTime); gg.gain.exponentialRampToValueAtTime(0.0001,a.currentTime+0.7); } setTimeout(function(){ try{ s&&s.stop(); }catch(e){} },800); btn(); }
-  function duck(d){ var a=A(); if(!g||!a) return; g.gain.cancelScheduledValues(a.currentTime); g.gain.setTargetAtTime(d?VOL*0.12:VOL,a.currentTime,0.3); }
+  function make(){ if(!el){ el=new Audio(); window.__t9music=el; el.src=SRC; el.loop=true; el.preload="auto"; el.setAttribute("playsinline",""); } return el; }
+  function route(){ if(routed) return; var a=A(); if(a&&a.createMediaElementSource){ try{ node=a.createMediaElementSource(make()); g=a.createGain(); g.gain.value=0.0001; node.connect(g); g.connect(a.destination); routed=true; }catch(e){} } }
+  function level(v,sec){ var a=A(); if(routed&&g&&a){ g.gain.cancelScheduledValues(a.currentTime); g.gain.setValueAtTime(Math.max(0.0001,g.gain.value),a.currentTime); g.gain.exponentialRampToValueAtTime(Math.max(0.0001,v),a.currentTime+sec); } else if(el){ try{ el.volume=Math.max(0,Math.min(1,v*2.2)); }catch(e){} } }
+  function meta(){ try{ if("mediaSession" in navigator&&window.MediaMetadata) navigator.mediaSession.metadata=new MediaMetadata({ title:"Train9 Theme", artist:"Train9", artwork:[{ src:"t9x-icon-512.png", sizes:"512x512", type:"image/png" }] }); }catch(e){} }
+  function start(){ if(on||!want()) return; make(); route(); on=true; var p=el.play(); if(p&&p.catch) p.catch(function(){ on=false; btn(); }); level(VOL,2.5); meta(); btn(); }
+  function stop(){ on=false; level(0.0001,0.6); setTimeout(function(){ if(!on&&el) el.pause(); },700); btn(); }
+  function duck(d){ if(on) level(d?VOL*0.12:VOL,0.35); }
   function toggle(){ S.profile.music=!want(); saveLocal(); if(want()) start(); else stop(); toast(want()?"Music on":"Music off"); }
   function btn(){ var b=document.getElementById("musBtn"); if(b) b.setAttribute("aria-pressed", String(want()&&on)); }
+  function prefetch(){ return new Promise(function(res){ var e=make(), done=function(){ res(); }; e.addEventListener("canplaythrough",done,{once:true}); e.addEventListener("error",done,{once:true}); try{ e.load(); }catch(er){} setTimeout(done,900); }); }
   document.addEventListener("visibilitychange",function(){ if(document.hidden){ if(on){ resume=true; stop(); } } else if(resume){ resume=false; start(); } });
   function kick(){ document.removeEventListener("pointerdown",kick,true); if(want()) start(); }
   document.addEventListener("pointerdown",kick,true);
   try{ if(navigator.audioSession) navigator.audioSession.type="ambient"; }catch(e){}
-  return { start:start, stop:stop, toggle:toggle, duck:duck, prefetch:fetchBuf, want:want, btn:btn };
+  return { start:start, stop:stop, toggle:toggle, duck:duck, prefetch:prefetch, want:want, btn:btn };
 })();
 (function(){ var c=FX.celebrate; FX.celebrate=function(o,done){ MUSIC.duck(true); return c(o,function(){ MUSIC.duck(false); if(done) done(); }); }; })();
 
@@ -3238,7 +3234,7 @@ var CLOUD=(function(){
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0000";
+var APP_VERSION="2026.11.22-0013";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
