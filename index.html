@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Train9">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="t9-icon-180.png">
+<link rel="icon" href="t9-icon-192.png">
 <title>Train9</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -116,6 +116,10 @@ details summary{cursor:pointer;font-weight:600;min-height:32px}
 .fig .post{stroke:var(--line);stroke-width:2}
 .fig .cb{stroke:var(--ink2);stroke-width:1}
 .fig .ft{stroke-width:4}
+.fig .body{filter:drop-shadow(0 1.5px 1.4px rgba(0,0,0,.5))}
+.fig .far{opacity:1}
+.fig .defn{fill:none;stroke:rgba(60,40,110,.28);stroke-width:.6;stroke-linecap:round}
+.fig .bd{stroke:none}
 .mini{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px;scroll-snap-type:x mandatory}
 .minic{flex:0 0 96px;scroll-snap-align:start;font-size:12px;line-height:1.25;color:var(--ink2)}
 .minic span{display:block;margin-top:4px}
@@ -380,7 +384,7 @@ nav.tabs{box-shadow:0 20px 50px -10px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,
 <body>
 <div class="wrap">
   <div class="statusbar">
-    <div class="row" style="gap:8px;flex-wrap:nowrap"><div class="avatar"><img src="icon-192.png" alt=""></div><div><div class="brand">Train9</div><div class="muted small" id="sub"></div></div></div>
+    <div class="row" style="gap:8px;flex-wrap:nowrap"><div class="avatar"><img src="t9-icon-192.png" alt=""></div><div><div class="brand">Train9</div><div class="muted small" id="sub"></div></div></div>
     <div class="topr"><button class="chip" id="wkchip" aria-label="Open ranked"></button><button class="gear" id="gear" aria-label="Settings and profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
   </div>
   <main>
@@ -960,6 +964,23 @@ var FIG = (function(){
   var SVGNS="http://www.w3.org/2000/svg";
   function el(tag,attrs,parent){ var e=document.createElementNS(SVGNS,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
 
+
+  var FIGN=0;
+  // side-view torso outline in spine units (u: 0 hip to 30 shoulder) and chest-direction depth (v)
+  var TORSO=[[-3,5.2],[4,5.8],[10,5.4],[15,6.6],[19,8.6],[23,9.0],[27,7.6],[30,4.4],[32.5,1],[31.5,-3.6],[28,-7.2],[22,-8.2],[15,-5.6],[8,-4.4],[3,-6.2],[-2,-8.4],[-7,-7.6],[-10,-2.4],[-7.5,3]];
+  function pt(p){ return p[0].toFixed(1)+" "+p[1].toFixed(1); }
+  function fx(n){ return n.toFixed(1); }
+  function circ(c,r){ return "M"+fx(c[0]-r)+" "+fx(c[1])+"a"+r+" "+r+" 0 1 0 "+fx(2*r)+" 0a"+r+" "+r+" 0 1 0 "+fx(-2*r)+" 0"; }
+  function smooth(P){ var n=P.length, d="M"+pt(P[0]); for(var i=0;i<n;i++){ var p0=P[(i-1+n)%n], p1=P[i], p2=P[(i+1)%n], p3=P[(i+2)%n];
+      d+="C"+fx(p1[0]+(p2[0]-p0[0])/6)+" "+fx(p1[1]+(p2[1]-p0[1])/6)+" "+fx(p2[0]-(p3[0]-p1[0])/6)+" "+fx(p2[1]-(p3[1]-p1[1])/6)+" "+pt(p2); } return d+"Z"; }
+  // tapered limb with a muscle belly on the front (bf) and back (bb), at fraction 'at' along the limb
+  function limb(A,B,ra,rb,bf,bb,at){
+    var dx=B[0]-A[0], dy=B[1]-A[1], l=Math.hypot(dx,dy)||1, ux=dx/l, uy=dy/l, nx=uy, ny=-ux;
+    var m=[A[0]+dx*at,A[1]+dy*at], rm=ra+(rb-ra)*at, cf=2*(rm+bf)-(ra+rb)/2, cb=2*(rm+bb)-(ra+rb)/2;
+    return "M"+fx(A[0]+nx*ra)+" "+fx(A[1]+ny*ra)+"Q"+fx(m[0]+nx*cf)+" "+fx(m[1]+ny*cf)+" "+fx(B[0]+nx*rb)+" "+fx(B[1]+ny*rb)+
+      "L"+fx(B[0]-nx*rb)+" "+fx(B[1]-ny*rb)+"Q"+fx(m[0]-nx*cb)+" "+fx(m[1]-ny*cb)+" "+fx(A[0]-nx*ra)+" "+fx(A[1]-ny*ra)+"Z"+circ(A,ra)+circ(B,rb);
+  }
+  function foot(A,T){ var dx=T[0]-A[0], dy=T[1]-A[1], l=Math.hypot(dx,dy)||1; var heel=[A[0]-dx/l*1.6, A[1]-dy/l*1.6]; return limb(heel,[T[0]+dx/l*1.2,T[1]+dy/l*1.2],2.5,1.5,0.3,0,0.5); }
   function create(container, name){
     var key=patternFor(name), pat=PAT[key];
     var cfg=Object.assign({}, pat.cfg||{});
@@ -967,17 +988,21 @@ var FIG = (function(){
     var svg=el("svg",{viewBox:"0 -14 120 114",class:"fig",role:"img","aria-label":name+" demonstration"});
     el("line",{x1:4,y1:FLOOR+1,x2:116,y2:FLOOR+1,class:"fl"},svg);
     var gStatic=el("g",{class:"pr"},svg), gMove=el("g",{class:"pr"},svg);
-    var far=el("g",{class:"far"},svg), nearG=el("g",{},svg);
-    function seg(parent,cls){ return el("line",{class:cls},parent); }
-    var parts={
-      th2:seg(far,"lg"), sh2:seg(far,"lg"), ft2:seg(far,"lg ft"), ua2:seg(far,"ar"), fa2:seg(far,"ar"),
-      torso:seg(nearG,"to"), th1:seg(nearG,"lg"), sh1:seg(nearG,"lg"), ft1:seg(nearG,"lg ft"), ua1:seg(nearG,"ar"), fa1:seg(nearG,"ar")
-    };
-    var head=el("circle",{r:L.HR,class:"hd"},nearG);
+    var gid="fg"+(++FIGN), defs=el("defs",{},svg);
+    function grad(id,c0,c1){ var g=el("linearGradient",{id:gid+id,gradientUnits:"userSpaceOnUse",x1:"30",y1:"-14",x2:"70",y2:"100"},defs); el("stop",{offset:"0","stop-color":c0},g); el("stop",{offset:"1","stop-color":c1},g); }
+    grad("b","#fbf9ff","#a59fd0"); grad("h","#ffd0f5","#b15cf7"); grad("r","#2b2147","#120d24"); grad("f","#a49bd2","#5d5590"); grad("fh","#c77be6","#6d2bb3");
+    var far=el("g",{class:"far"},svg), nearG=el("g",{class:"body"},svg);
+    function bp(parent,k){ return el("path",{class:"bd",fill:"url(#"+gid+(parent===far?"f":"b")+")","data-k":k},parent); }
+    var parts={ th2:bp(far,"th2"), sh2:bp(far,"sh2"), ft2:bp(far,"ft2"), ua2:bp(far,"ua2"), fa2:bp(far,"fa2"),
+      torso:bp(nearG,"torso"), neck:bp(nearG,"neck"), th1:bp(nearG,"th1"), sh1:bp(nearG,"sh1"), ft1:bp(nearG,"ft1"), ua1:bp(nearG,"ua1"), fa1:bp(nearG,"fa1") };
+    var hair=el("path",{fill:"url(#"+gid+"r)"},nearG), head=el("path",{fill:"url(#"+gid+"b)"},nearG);
+    nearG.insertBefore(hair, parts.th1); nearG.insertBefore(head, parts.th1);
+    var defn=el("path",{class:"defn"},nearG);
     var hi=pat.hi||[];
-    if(hi.indexOf("leg")>=0) ["th1","sh1","th2","sh2"].forEach(function(k){ parts[k].classList.add("hl"); });
-    if(hi.indexOf("arm")>=0) ["ua1","fa1","ua2","fa2"].forEach(function(k){ parts[k].classList.add("hl"); });
-    if(hi.indexOf("torso")>=0||hi.indexOf("core")>=0) parts.torso.classList.add("hl");
+    function mark(k){ parts[k].setAttribute("fill","url(#"+gid+(/2$/.test(k)?"fh":"h")+")"); }
+    if(hi.indexOf("leg")>=0) ["th1","sh1","th2","sh2"].forEach(mark);
+    if(hi.indexOf("arm")>=0) ["ua1","fa1","ua2","fa2"].forEach(mark);
+    if(hi.indexOf("torso")>=0||hi.indexOf("core")>=0) mark("torso");
     // static props
     var P0=solve(frames[0],cfg);
     var pr=pat.prop||"";
@@ -1011,10 +1036,21 @@ var FIG = (function(){
     function paint(p){
       var q=solve(p,cfg);
       function L_(e,a,b){ e.setAttribute("x1",a[0].toFixed(1)); e.setAttribute("y1",a[1].toFixed(1)); e.setAttribute("x2",b[0].toFixed(1)); e.setAttribute("y2",b[1].toFixed(1)); }
-      L_(parts.torso,q.hip,q.sho); L_(parts.th1,q.hip,q.k1); L_(parts.sh1,q.k1,q.a1); L_(parts.ft1,q.a1,q.t1);
-      L_(parts.th2,q.hip,q.k2); L_(parts.sh2,q.k2,q.a2); L_(parts.ft2,q.a2,q.t2);
-      L_(parts.ua1,q.sho,q.e1); L_(parts.fa1,q.e1,q.w1); L_(parts.ua2,q.sho,q.e2); L_(parts.fa2,q.e2,q.w2);
-      head.setAttribute("cx",q.head[0].toFixed(1)); head.setAttribute("cy",q.head[1].toFixed(1));
+      // torso frame: u along spine, v toward the chest
+      var ax=q.sho[0]-q.hip[0], ay=q.sho[1]-q.hip[1], Lt=Math.hypot(ax,ay)||1, ux=ax/Lt, uy=ay/Lt, vx=-uy, vy=ux, sc=Lt/30;
+      function TP(uu,vv){ return [q.hip[0]+ux*uu*sc+vx*vv, q.hip[1]+uy*uu*sc+vy*vv]; }
+      parts.torso.setAttribute("d", smooth(TORSO.map(function(o){ return TP(o[0],o[1]); })));
+      defn.setAttribute("d", "M"+pt(TP(16.5,7.6))+"Q"+pt(TP(18.5,3.4))+" "+pt(TP(23,1.6))+"M"+pt(TP(14,5.4))+"Q"+pt(TP(9,5.6))+" "+pt(TP(2,4.6)));
+      var hp=TP(-1.5,-0.5);
+      parts.th1.setAttribute("d", limb(hp,q.k1,7.6,4.8,2.6,1.8,0.4)); parts.th2.setAttribute("d", limb(hp,q.k2,7.6,4.8,2.6,1.8,0.4));
+      parts.sh1.setAttribute("d", limb(q.k1,q.a1,4.7,2.5,0.3,3.1,0.3)); parts.sh2.setAttribute("d", limb(q.k2,q.a2,4.7,2.5,0.3,3.1,0.3));
+      parts.ft1.setAttribute("d", foot(q.a1,q.t1)); parts.ft2.setAttribute("d", foot(q.a2,q.t2));
+      parts.ua1.setAttribute("d", limb(q.sho,q.e1,5.0,3.4,2.2,1.9,0.5)+circ(TP(27,0.3),6.4)); parts.ua2.setAttribute("d", limb(q.sho,q.e2,5.0,3.4,2.2,1.9,0.5)+circ(TP(27,0.3),6.0));
+      parts.fa1.setAttribute("d", limb(q.e1,q.w1,3.7,2.2,1.4,0.8,0.28)+circ(q.w1,2.5)); parts.fa2.setAttribute("d", limb(q.e2,q.w2,3.7,2.2,1.4,0.8,0.28)+circ(q.w2,2.5));
+      var hc=q.head, nb=TP(29.5,0.6);
+      parts.neck.setAttribute("d", limb(nb,[hc[0]-ux*2+vx*0.4,hc[1]-uy*2+vy*0.4],4.6,3.6,0,0,0.5));
+      hair.setAttribute("d", circ([hc[0]+ux*0.9-vx*0.9, hc[1]+uy*0.9-vy*0.9],6.5)+circ([hc[0]+ux*1.8-vx*2.6,hc[1]+uy*1.8-vy*2.6],4.2));
+      head.setAttribute("d", circ([hc[0]+vx*0.3,hc[1]+vy*0.3],5.8)+circ([hc[0]+vx*2.6-ux*3.2,hc[1]+vy*2.6-uy*3.2],3.1));
       if(mover){ var at= pr==="backbar" ? [q.sho[0]-2,q.sho[1]+1] : q.w1; mover.setAttribute("transform","translate("+at[0].toFixed(1)+","+at[1].toFixed(1)+")"); }
       if(cable){ var anc= pr==="floorrow"?[100,62]:[104,0]; L_(cable,anc,q.w1); }
     }
@@ -2106,7 +2142,7 @@ function openReview(d,ev,st,before){
 }
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.21-1732";
+var APP_VERSION="2026.11.21-1833";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
