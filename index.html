@@ -661,6 +661,14 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
 
 button.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
 .vtap{display:block;margin:6px auto 0;background:none;border:0;color:var(--ink3);font:500 12px var(--fb);min-height:32px;padding:4px 10px}
+#bugbar{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:480;display:flex;align-items:center;gap:8px;padding:10px 10px 10px 14px;border-radius:16px;max-width:560px;margin:0 auto;
+  background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border:1px solid color-mix(in srgb,var(--bad) 40%,var(--line2));box-shadow:0 16px 34px -14px rgba(0,0,0,.6);animation:t9in .3s var(--ease);font-size:14px}
+#bugbar span{flex:1}
+#bugbar button{min-height:36px;padding:6px 12px}
+details.rep{border-top:1px solid var(--line);padding:10px 0}
+details.rep summary{list-style:none;cursor:pointer}
+details.rep summary::-webkit-details-marker{display:none}
+input[type=checkbox],input[type=radio]{-webkit-appearance:auto;appearance:auto;width:20px;height:20px;min-height:0;padding:0;accent-color:var(--v);flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -2918,12 +2926,14 @@ function acctCards(){
       :'<div class="setrow2"><div><b>Push notifications</b><span>'+(ps==="install"?"Add Train9 to your Home Screen first":ps==="denied"?"Blocked. Allow in iPhone Settings":ps==="unsupported"?"Needs iOS 16.4 or later":"Workout reminders, new seasons, invites")+'</span></div><button class="acc" id="pOn"'+(!u||ps==="install"||ps==="unsupported"?" disabled":"")+'>Turn on</button></div>')+
     '<div class="setrow2"><div><b>Reminder time</b><span>On training days you haven\'t logged</span></div><select id="remH" aria-label="Reminder time"'+(u?"":" disabled")+'>'+hrs+'</select></div>'+
     '<div class="setrow2"><div><b>Email updates</b><span>New seasons, events and offers</span></div><button class="sw" role="switch" id="emSw" aria-label="Email updates" aria-checked="'+(!!pf.notify_email)+'"'+(u?"":" disabled")+'></button></div></div>';
+  h+='<div class="card"><h3>Help</h3><div class="setrow2"><div><b>Report a problem</b><span>Bugs, freezes or anything that looks off</span></div><button class="soft" id="bugBtn">Report</button></div></div>';
   return h;
 }
 function acctWire(){
   function sw(id,fn){ var b=$(id); if(b) b.onclick=function(){ var v=b.getAttribute("aria-checked")!=="true"; b.setAttribute("aria-checked",String(v)); SFX.tap(); fn(v); }; }
   if($("#soBtn")) $("#soBtn").onclick=function(){ if(confirm("Sign out? Your progress stays saved to your account.")) CLOUD.signOut(); };
   if($("#siBtn")) $("#siBtn").onclick=function(){ try{ sessionStorage.removeItem("t9.off"); }catch(e){} location.reload(); };
+  if($("#bugBtn")) $("#bugBtn").onclick=function(){ BUG.open("manual"); };
   if($("#delBtn")) $("#delBtn").onclick=function(){ var v=prompt("This permanently deletes your Train9 account, progress and leaderboard entry. Type DELETE to confirm."); if(v&&v.trim().toUpperCase()==="DELETE") CLOUD.deleteAccount(); };
   if($("#trSel")) $("#trSel").onchange=function(){ MUSIC.setTrack(this.value); SFX.tap(); toast("Track: "+MUSIC.tracks[this.value][1]); };
   $("#thSel").onchange=function(){ setTheme(this.value); SFX.tap(); };
@@ -3023,6 +3033,7 @@ function devCard(){
   if(!devMode()) return "";
   var k=getKey();
   return '<div class="card"><div class="exh"><h3>Developer</h3><button class="soft" id="devOff">Hide</button></div><p class="small muted">Only visible on this phone. Customers never see this.</p>'+
+    ((typeof CLOUD!=="undefined"&&CLOUD.user())?(CLOUD.isOwner()?'<div class="setrow2"><div><b>Bug reports</b><span>Only your account can read these</span></div><button class="acc" id="repBtn">Open</button></div>':'<div class="setrow2"><div><b>Owner access</b><span>Claim once to read bug reports. Nobody else can claim it after you.</span></div><button class="soft" id="ownBtn">Claim</button></div>'):'<p class="small">Sign in to read bug reports.</p>')+
     '<label for="aKey" style="margin-top:10px">Your Anthropic API key (this phone only)</label><input id="aKey" type="password" autocomplete="off" placeholder="sk-ant-..." value="'+esc(k)+'">'+
     '<label for="aModel" style="margin-top:8px">Model</label><input id="aModel" type="text" value="'+esc(getModel())+'">'+
     '<div class="row" style="margin-top:8px"><button class="pri" id="aSave">Save key</button><button id="aTest">Test</button><span class="small muted" id="aStat2">'+(k?"Key saved. AI uses your key.":"No key. AI uses the Train9 server.")+'</span></div>'+
@@ -3035,6 +3046,8 @@ function devWire(){
   if(vt){ var c=0, tm=0; vt.onclick=function(){ c++; clearTimeout(tm); tm=setTimeout(function(){ c=0; },1600);
     if(c>=7){ c=0; try{ localStorage.setItem("t9.dev", devMode()?"0":"1"); }catch(e){} SFX.complete(); toast(devMode()?"Developer mode on":"Developer mode off"); rMe(); }
     else if(c>=4) toast((7-c)+" more taps"); }; }
+  if($("#ownBtn")) $("#ownBtn").onclick=function(){ CLOUD.claimOwner(function(ok){ toast(ok?"You're the owner now":"The owner has already been claimed"); rMe(); }); };
+  if($("#repBtn")) $("#repBtn").onclick=function(){ openReports(); };
   if($("#devOff")) $("#devOff").onclick=function(){ try{ localStorage.setItem("t9.dev","0"); }catch(e){} rMe(); };
 }
 function aiErr(e){
@@ -3069,6 +3082,82 @@ function aiReady(){ return !!getKey()||(typeof CLOUD!=="undefined"&&CLOUD.user()
 function standaloneApp(){ return window.navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches); }
 function aiRefresh(){ sampleFn=AI; imgOK=true; }
 
+// ===================== problem reports: errors, freezes, crashes, manual =====================
+var BUG=(function(){
+  var last=null, shown={}, Q="t9.bugq", RUN="t9.run";
+  function ctx(){ var st=null; try{ st=LED(); }catch(e){} return { online:navigator.onLine, standalone:standaloneApp(), screen:innerWidth+"x"+innerHeight, rank:st?rankLabel(st.idx):"", theme:document.documentElement.getAttribute("data-theme")||"auto", at:new Date().toISOString() }; }
+  function row(kind,desc,err){ return { kind:kind, message:err&&err.message?err.message:null, stack:err&&err.stack?err.stack:null, description:(desc||"").slice(0,4000), app_version:String(APP_VERSION).slice(0,40), view:String(VIEW).slice(0,20), device:navigator.userAgent.slice(0,400), context:ctx() }; }
+  function queue(r){ try{ var q=JSON.parse(localStorage.getItem(Q)||"[]"); q.push(r); localStorage.setItem(Q,JSON.stringify(q.slice(-10))); }catch(e){} }
+  function flush(){ if(typeof CLOUD==="undefined"||!CLOUD.user()) return; var q=[]; try{ q=JSON.parse(localStorage.getItem(Q)||"[]"); localStorage.removeItem(Q); }catch(e){} q.forEach(function(r){ CLOUD.report(r).catch(function(){ queue(r); }); }); }
+  function send(r){ if(typeof CLOUD!=="undefined"&&CLOUD.user()) return CLOUD.report(r).then(function(){ return "sent"; },function(){ queue(r); return "queued"; }); queue(r); return Promise.resolve("queued"); }
+  function capture(kind,msg,stack){
+    last={ kind:kind, message:String(msg||"").slice(0,2000), stack:String(stack||"").slice(0,8000) };
+    var k=kind+"|"+last.message.slice(0,60); if(shown[k]) return; shown[k]=1; bar(kind);
+  }
+  function bar(kind){
+    var el=document.getElementById("bugbar"); if(el) el.remove();
+    el=document.createElement("div"); el.id="bugbar"; el.setAttribute("role","alert");
+    el.innerHTML='<span>'+(kind==="crash"?"Train9 closed unexpectedly last time.":kind==="freeze"?"Train9 froze for a moment.":"Something went wrong.")+'</span><button class="soft" id="bugGo">Report</button><button class="soft" id="bugX" aria-label="Dismiss">×</button>';
+    document.body.appendChild(el);
+    el.querySelector("#bugGo").onclick=function(){ el.remove(); open(kind); };
+    el.querySelector("#bugX").onclick=function(){ el.remove(); };
+    setTimeout(function(){ if(el.parentNode) el.remove(); },15000);
+  }
+  function open(kind){
+    kind=kind||"manual"; var d=document.getElementById("bugdlg");
+    if(!d){ d=document.createElement("dialog"); d.id="bugdlg"; d.setAttribute("aria-label","Report a problem"); document.body.appendChild(d); }
+    var snap=last, has=!!(snap&&kind!=="manual");
+    d.innerHTML='<div class="dbody"><h2 style="margin:0 0 6px">Report a problem</h2><p class="small muted">Tell us what happened. It goes straight to the developer.</p>'+
+      '<label for="bugTx" style="margin-top:12px">What were you doing?</label><textarea id="bugTx" placeholder="e.g. I tapped Finish session and the screen went blank"></textarea>'+
+      (has?'<label class="row small" style="margin-top:10px;gap:8px;color:var(--ink)"><input type="checkbox" id="bugInc" checked style="width:auto;min-height:0">Include technical details</label><p class="small muted" style="word-break:break-word;margin-top:4px">'+esc(snap.message)+'</p>':'')+
+      '<div class="row" style="margin-top:14px"><button id="bugCancel">Cancel</button><button class="acc" id="bugSend" style="flex:1">Send report</button></div></div>';
+    if(d.showModal) d.showModal(); else d.setAttribute("open","");
+    d.querySelector("#bugCancel").onclick=function(){ d.close(); };
+    d.querySelector("#bugSend").onclick=function(){
+      var tx=d.querySelector("#bugTx").value.trim(), inc=has&&d.querySelector("#bugInc").checked;
+      if(!tx&&!inc){ toast("Add a short description"); return; }
+      this.disabled=true;
+      send(row(kind,tx,inc?snap:null)).then(function(s){ d.close(); toast(s==="sent"?"Report sent. Thank you.":"Saved. It will send once you're online and signed in."); });
+    };
+  }
+  window.addEventListener("error",function(e){ if(!e||!e.message||/ResizeObserver|^Script error/i.test(e.message)) return; capture("error",e.message+(e.filename?" ("+e.filename.split("/").pop()+":"+e.lineno+")":""),e.error&&e.error.stack); });
+  window.addEventListener("unhandledrejection",function(e){ var r=e&&e.reason; if(!r||r.code||r.name==="AbortError") return; capture("error","Unhandled: "+(r.message||String(r)),r.stack); });
+  // freeze: the main thread stalls while the app is on screen
+  var beat=performance.now(), vis=0;
+  document.addEventListener("visibilitychange",function(){ vis=beat=performance.now(); mark(); });
+  setInterval(function(){ var n=performance.now(), gap=n-beat; beat=n; if(gap>6000&&document.visibilityState==="visible"&&n-vis>gap) capture("freeze","Screen stopped responding for "+Math.round(gap/1000)+" s on "+VIEW); },1000);
+  // crash: the app vanished while it was open on screen
+  var SID=Math.random().toString(36).slice(2), born=Date.now();
+  function mark(){ try{ localStorage.setItem(RUN,JSON.stringify({ alive:document.visibilityState==="visible", t:Date.now(), view:VIEW, sid:SID })); }catch(e){} }
+  try{ var prev=JSON.parse(localStorage.getItem(RUN)||"null");
+    if(prev&&prev.alive&&Date.now()-prev.t<15*60000) setTimeout(function(){
+      var now=null; try{ now=JSON.parse(localStorage.getItem(RUN)||"null"); }catch(e){}
+      if(now&&now.sid!==SID&&now.t>born) return; // another open copy of the app is still running, not a crash
+      capture("crash","App closed unexpectedly while on "+(prev.view||"a screen"));
+    },12000); }catch(e){}
+  mark(); setInterval(function(){ if(document.visibilityState==="visible") mark(); },10000);
+  window.addEventListener("pagehide",function(){ try{ localStorage.setItem(RUN,JSON.stringify({ alive:false, t:Date.now(), sid:SID })); }catch(e){} });
+  return { open:open, flush:flush, capture:capture };
+})();
+function openReports(){
+  var d=document.getElementById("repdlg");
+  if(!d){ d=document.createElement("dialog"); d.id="repdlg"; d.setAttribute("aria-label","Bug reports"); document.body.appendChild(d); }
+  d.innerHTML='<div class="dbody"><div class="exh"><h2 style="margin:0">Bug reports</h2><button class="soft" id="repX">Close</button></div><p class="small muted">Only your owner account can read these.</p><div id="repList" class="small muted" style="margin-top:10px">Loading...</div></div>';
+  if(!d.open){ if(d.showModal) d.showModal(); else d.setAttribute("open",""); }
+  d.querySelector("#repX").onclick=function(){ d.close(); };
+  CLOUD.reports(function(rows){
+    var el=d.querySelector("#repList"); if(!el) return;
+    if(!rows){ el.textContent="Couldn't load reports."; return; }
+    if(!rows.length){ el.textContent="No reports yet. Nice."; return; }
+    el.innerHTML=rows.map(function(r){
+      var info=[r.email?"User: "+r.email:"","Screen: "+(r.view||""),"Version: "+(r.app_version||""),r.description?"They said: "+r.description:"",r.message?"Error: "+r.message:"",r.stack?"Stack: "+String(r.stack).slice(0,1500):"","Device: "+(r.device||""),"Context: "+JSON.stringify(r.context||{})].filter(Boolean).join("\n");
+      return '<details class="rep"><summary><span class="chip '+(r.status==="new"?"A":r.status==="fixed"?"B":"")+'">'+esc(r.status)+'</span> <b>'+esc(r.kind)+'</b> · '+esc(new Date(r.created_at).toLocaleString())+'<div class="small" style="color:var(--ink)">'+esc(String(r.description||r.message||"").slice(0,100))+'</div></summary>'+
+        '<div class="small" style="margin:8px 0;white-space:pre-wrap;word-break:break-word">'+esc(info)+'</div><div class="row"><button class="soft" data-rs="'+r.id+'|seen">Mark seen</button><button class="soft" data-rs="'+r.id+'|fixed">Mark fixed</button></div></details>';
+    }).join("");
+    el.querySelectorAll("[data-rs]").forEach(function(b){ b.onclick=function(){ var p=b.dataset.rs.split("|"); CLOUD.setReport(+p[0],p[1]).then(function(){ toast("Marked "+p[1]); openReports(); }); }; });
+  });
+}
+
 // ---------- Cloud: sign-in, sync, real leaderboard, referrals, notifications (Supabase) ----------
 var CLOUD=(function(){
   var URL_="https://thfdaulkuqiuqaeuylvs.supabase.co", KEY="sb_publishable_G6JN00aEj7kQ-RGlS-SOFg_eJU_GZF_";
@@ -3097,7 +3186,7 @@ var CLOUD=(function(){
         '<button class="gbtn" data-pv="google">'+ICON.google+'<span>Continue with Google</span>'+(CFG.google?'':'<em>Soon</em>')+'</button>'+
         '<button class="gbtn main" id="gEm">'+ICON.mail+'<span>Continue with email</span></button>'+
       '</div>'+
-      '<div class="gstep hide" id="gs2"><label for="gMail" class="gl">Your email</label><input id="gMail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" autocapitalize="off">'+
+      '<div class="gstep hide" id="gs2"><label for="gMail" class="gl">Your email</label><input id="gMail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" autocapitalize="off"><label for="gRef" class="gl" style="margin-top:4px">Invite code (optional)</label><input id="gRef" autocapitalize="characters" autocomplete="off" placeholder="e.g. 7F3K2A" value="'+esc((function(){ try{ return localStorage.getItem("t9.ref")||""; }catch(e){ return ""; } })())+'" maxlength="12">'+
         '<button class="acc big wide" id="gSend">Send my code</button><button class="glink" id="gB1">Back</button></div>'+
       '<div class="gstep hide" id="gs3"><p class="gl">Enter the 6-digit code sent to <b id="gTo"></b></p><input id="gCode" class="gcode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-label="6-digit code">'+
         '<button class="acc big wide" id="gVer">Sign in</button><div class="row" style="justify-content:center;gap:4px"><button class="glink" id="gRe">Send a new code</button><button class="glink" id="gB2">Change email</button></div><button class="glink" id="gLk">Got a link instead of a code?</button><div id="gLkBox" class="hide"><p class="gl">In the email, press and hold the sign-in button, tap Copy Link, then paste it here. Don\'t tap the link itself.</p><input id="gLink" type="url" inputmode="url" placeholder="Paste the sign-in link" autocapitalize="off" autocomplete="off"><button class="acc big wide" id="gLkGo" style="margin-top:10px">Sign in with link</button></div></div>'+
@@ -3120,7 +3209,7 @@ var CLOUD=(function(){
       var em=$g("#gMail").value.trim().toLowerCase();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ err("Enter a valid email address."); return; }
       gEmail=em; busy(btn,true,"Sending...");
-      sb.auth.signInWithOtp({ email:em, options:{ shouldCreateUser:true, data:{ name:(S.profile.name||"").slice(0,24), ref:(localStorage.getItem("t9.ref")||""), tz:tz() } } }).then(function(r){
+      sb.auth.signInWithOtp({ email:em, options:{ shouldCreateUser:true, data:{ name:(S.profile.name||"").slice(0,24), ref:(($g("#gRef")&&$g("#gRef").value)||localStorage.getItem("t9.ref")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12), tz:tz() } } }).then(function(r){
         busy(btn,false,btn.id==="gRe"?"Send a new code":"Send my code");
         if(r.error){ err(errText(r.error)); return; }
         $g("#gTo").textContent=em; step(3); toast("Code sent. Check your inbox.");
@@ -3169,7 +3258,7 @@ var CLOUD=(function(){
       if(prof){ if(!S.profile.name&&prof.display_name){ S.profile.name=prof.display_name; saveLocal(); }
         else if(S.profile.name&&prof.display_name!==S.profile.name.slice(0,24)) sb.from("profiles").update({ display_name:S.profile.name.slice(0,24) }).eq("id",u.id).then(function(){}); }
       return syncDown();
-    }).then(function(){ queue(true); if(fresh){ render(); toast("Signed in. Progress saved to your account."); } afterAuth(); }).catch(function(){ afterAuth(); });
+    }).then(function(){ queue(true); if(fresh){ render(); toast("Signed in. Progress saved to your account."); } afterAuth(); BUG.flush(); }).catch(function(){ afterAuth(); });
   }
   function hasData(o){ if(!o) return false; var t=o.train&&Object.keys(o.train).length, f=o.food&&Object.keys(o.food).some(function(k){ return o.food[k]&&o.food[k].length; }), w=o.profile&&o.profile.weights&&o.profile.weights.length; return !!(t||f||w); }
   function syncDown(){
@@ -3263,6 +3352,10 @@ var CLOUD=(function(){
   var aiState=null;
   function aiStatus(){ fetch(URL_+"/functions/v1/ai").then(function(r){ return r.json(); }).then(function(j){ aiState=!!j.on; if(VIEW==="food") rFood(); }).catch(function(){}); }
   function ai(body,signal){ return sb.auth.getSession().then(function(r){ var t=r.data.session&&r.data.session.access_token; return fetch(URL_+"/functions/v1/ai",{ method:"POST", signal:signal, headers:{ "Content-Type":"application/json", Authorization:"Bearer "+t, apikey:KEY }, body:JSON.stringify(body) }); }); }
+  function report(row){ if(!user||!sb) return Promise.reject({code:"sign_in"}); row.user_id=user.id; row.email=user.email||null; return sb.from("bug_reports").insert(row).then(function(r){ if(r.error) throw r.error; return true; }); }
+  function reports(cb){ sb.from("bug_reports").select("*").order("created_at",{ascending:false}).limit(60).then(function(r){ cb(r.error?null:(r.data||[])); },function(){ cb(null); }); }
+  function setReport(id,status){ return sb.from("bug_reports").update({ status:status }).eq("id",id); }
+  function claimOwner(cb){ sb.rpc("claim_owner").then(function(r){ if(prof) prof.is_dev=!!r.data; cb(!!r.data); },function(){ cb(false); }); }
   function setPref(patch){ if(!user) return; Object.assign(prof||{},patch); sb.from("profiles").update(patch).eq("id",user.id).then(function(r){ if(!r.error) toast("Saved"); }); }
   function signOut(){
     push().then(function(){ return sb.auth.signOut(); }).then(function(){ try{ localStorage.removeItem(LS); localStorage.removeItem("t9.auth"); }catch(e){} location.reload(); });
@@ -3292,12 +3385,12 @@ var CLOUD=(function(){
   aiStatus();
   if(sb) sb.auth.onAuthStateChange(function(ev){ if(ev==="SIGNED_OUT"){ user=null; } });
 
-  return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, deleteAccount:deleteAccount, ai:ai, aiOn:function(){ return aiState===true; }, aiKnown:function(){ return aiState!==null; },
+  return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, deleteAccount:deleteAccount, report:report, reports:reports, setReport:setReport, claimOwner:claimOwner, isOwner:function(){ return !!(prof&&prof.is_dev); }, ai:ai, aiOn:function(){ return aiState===true; }, aiKnown:function(){ return aiState!==null; },
     user:function(){ return user; }, prof:function(){ return prof; }, board:function(){ return board; }, refs:function(){ return refs; } };
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0132";
+var APP_VERSION="2026.11.22-0147";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
