@@ -1,4 +1,4 @@
-var V="2026.11.23-1216", C="train9-"+V;
+var V="2026.11.23-1220", C="train9-"+V;
 var CORE=["./","index.html","manifest.json","t9x-icon-192.png","t9x-icon-512.png","t9x-icon-180.png","vendor/supabase.js"];
 self.addEventListener("install",function(e){ self.skipWaiting(); e.waitUntil(caches.open(C).then(function(c){ return Promise.all(CORE.map(function(u){ return fetch(u,{cache:"no-store"}).then(function(r){ if(r.ok) return c.put(u,r); }).catch(function(){}); })); })); });
 self.addEventListener("activate",function(e){ e.waitUntil(caches.keys().then(function(ks){ return Promise.all(ks.filter(function(k){ return k!==C; }).map(function(k){ return caches.delete(k); })); }).then(function(){ return self.clients.claim(); })); });

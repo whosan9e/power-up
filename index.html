@@ -3024,7 +3024,7 @@ function setTheme(v){ try{ if(v==="auto") localStorage.removeItem("t9.theme"); e
 function acctCards(){
   var u=CLOUD.user(), pf=CLOUD.prof()||{}, ps=CLOUD.pushState(), th="auto"; try{ th=localStorage.getItem("t9.theme")||"auto"; }catch(e){}
   var hrs=""; for(var hh=5;hh<=22;hh++){ hrs+='<option value="'+hh+'"'+((pf.reminder_hour||17)===hh?" selected":"")+'>'+(hh%12||12)+':00 '+(hh<12?"am":"pm")+'</option>'; }
-  var h='<div class="card"><div class="exh"><h3>Account</h3><a class="small" href="privacy.html" style="color:var(--v2)">Privacy policy</a></div>'+(u?'<div class="setrow2"><div><b>'+esc(u.email||"Signed in")+'</b><span>Progress syncs to your account</span></div><button class="soft" id="soBtn">Sign out</button></div><div class="setrow2"><div><b>Delete account</b><span>Permanently removes your account and data</span></div><button class="soft danger" id="delBtn">Delete</button></div>':'<div class="setrow2"><div><b>Not signed in</b><span>Sign in to sync, compete and get reminders</span></div><button class="acc" id="siBtn">Sign in</button></div>')+'</div>';
+  var h='<div class="card"><div class="exh"><h3>Account</h3><a class="small" href="privacy.html" style="color:var(--v2)">Privacy policy</a></div>'+(u?'<div class="setrow2"><div><b>'+esc(u.email||"Signed in")+'</b><span>Progress syncs to your account</span></div><button class="soft" id="soBtn">Sign out</button></div><div class="setrow2"><div><b>Password</b><span>Change the password you sign in with</span></div><button class="soft" id="pwBtn">Change</button></div><div class="setrow2"><div><b>Delete account</b><span>Permanently removes your account and data</span></div><button class="soft danger" id="delBtn">Delete</button></div>':'<div class="setrow2"><div><b>Not signed in</b><span>Sign in to sync, compete and get reminders</span></div><button class="acc" id="siBtn">Sign in</button></div>')+'</div>';
   h+='<div class="card"><h3>Look and sound</h3>'+
     '<div class="setrow2"><div><b>Theme</b><span>Light glass or dark liquid glass</span></div><select id="thSel" aria-label="Theme">'+[["auto","Match phone"],["light","Light"],["dark","Dark"]].map(function(o){ return '<option value="'+o[0]+'"'+(th===o[0]?" selected":"")+'>'+o[1]+'</option>'; }).join("")+'</select></div>'+
     '<div class="setrow2"><div><b>Background music</b><span>Original Train9 theme</span></div><button class="sw" role="switch" id="muSw" aria-label="Background music" aria-checked="'+MUSIC.want()+'"></button></div>'+
@@ -3040,6 +3040,7 @@ function acctCards(){
 }
 function acctWire(){
   function sw(id,fn){ var b=$(id); if(b) b.onclick=function(){ var v=b.getAttribute("aria-checked")!=="true"; b.setAttribute("aria-checked",String(v)); SFX.tap(); fn(v); }; }
+  if($("#pwBtn")) $("#pwBtn").onclick=function(){ var p=prompt("New password (6+ characters)"); if(!p) return; if(p.length<6){ toast("Use at least 6 characters"); return; } CLOUD.setPassword(p).then(function(r){ toast(r&&r.error?"Could not change password":"Password changed"); }); };
   if($("#soBtn")) $("#soBtn").onclick=function(){ if(confirm("Sign out? Your progress stays saved to your account.")) CLOUD.signOut(); };
   if($("#siBtn")) $("#siBtn").onclick=function(){ try{ sessionStorage.removeItem("t9.off"); }catch(e){} location.reload(); };
   if($("#bugBtn")) $("#bugBtn").onclick=function(){ BUG.open("manual"); };
@@ -3555,6 +3556,7 @@ var CLOUD=(function(){
   function setReport(id,status){ return sb.from("bug_reports").update({ status:status }).eq("id",id); }
   function claimOwner(cb){ sb.rpc("claim_owner").then(function(r){ if(prof) prof.is_dev=!!r.data; cb(!!r.data); },function(){ cb(false); }); }
   function setPref(patch){ if(!user) return; Object.assign(prof||{},patch); sb.from("profiles").update(patch).eq("id",user.id).then(function(r){ if(!r.error) toast("Saved"); }); }
+  function setPassword(p){ return sb?sb.auth.updateUser({ password:p }):Promise.resolve({error:1}); }
   function signOut(){
     push().then(function(){ return sb.auth.signOut(); }).then(function(){ try{ localStorage.removeItem(LS); localStorage.removeItem("t9.auth"); }catch(e){} location.reload(); });
   }
@@ -3584,12 +3586,12 @@ var CLOUD=(function(){
   if(sb) sb.auth.onAuthStateChange(function(ev){ if(ev==="SIGNED_OUT"){ user=null; }
     if(ev==="PASSWORD_RECOVERY") setTimeout(function(){ var p=prompt("Choose a new Train9 password (6+ characters)"); if(p&&p.length>=6) sb.auth.updateUser({ password:p }).then(function(r){ toast(r.error?"Could not save password":"Password updated"); }); },400); });
 
-  return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, deleteAccount:deleteAccount, report:report, reports:reports, setReport:setReport, claimOwner:claimOwner, isOwner:function(){ return !!(prof&&prof.is_dev); }, ai:ai, aiOn:function(){ return aiState===true; }, aiKnown:function(){ return aiState!==null; },
+  return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, setPassword:setPassword, deleteAccount:deleteAccount, report:report, reports:reports, setReport:setReport, claimOwner:claimOwner, isOwner:function(){ return !!(prof&&prof.is_dev); }, ai:ai, aiOn:function(){ return aiState===true; }, aiKnown:function(){ return aiState!==null; },
     user:function(){ return user; }, prof:function(){ return prof; }, board:function(){ return board; }, refs:function(){ return refs; } };
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.23-1216";
+var APP_VERSION="2026.11.23-1220";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
