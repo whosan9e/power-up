@@ -3373,8 +3373,8 @@ var CLOUD=(function(){
         '<button class="gbtn" data-pv="google">'+ICON.google+'<span>Continue with Google</span>'+(CFG.google?'':'<em>Soon</em>')+'</button>'+
         '<button class="gbtn main" id="gEm">'+ICON.mail+'<span>Continue with email</span></button>'+
       '</div>'+
-      '<div class="gstep hide" id="gs2"><label for="gMail" class="gl">Your email</label><input id="gMail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" autocapitalize="off"><label for="gRef" class="gl" style="margin-top:4px">Invite code (optional)</label><input id="gRef" autocapitalize="characters" autocomplete="off" placeholder="e.g. 7F3K2A" value="'+esc((function(){ try{ return localStorage.getItem("t9.ref")||""; }catch(e){ return ""; } })())+'" maxlength="12">'+
-        '<button class="acc big wide" id="gSend">Send my code</button><button class="glink" id="gB1">Back</button></div>'+
+      '<div class="gstep hide" id="gs2"><label for="gMail" class="gl">Your email</label><input id="gMail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" autocapitalize="off"><label for="gRef" class="gl" style="margin-top:4px">Invite code (optional)</label><input id="gRef" autocapitalize="characters" autocomplete="off" placeholder="e.g. 7F3K2A" value="'+esc((function(){ try{ return localStorage.getItem("t9.ref")||""; }catch(e){ return ""; } })())+'" maxlength="12"><label for="gPw" class="gl" style="margin-top:4px">Password</label><input id="gPw" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6">'+
+        '<button class="acc big wide" id="gSend">Continue</button><button class="glink" id="gFg">Forgot password?</button><button class="glink" id="gB1">Back</button></div>'+
       '<div class="gstep hide" id="gs3"><p class="gl">Enter the 6-digit code sent to <b id="gTo"></b></p><input id="gCode" class="gcode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-label="6-digit code">'+
         '<button class="acc big wide" id="gVer">Sign in</button><div class="row" style="justify-content:center;gap:4px"><button class="glink" id="gRe">Send a new code</button><button class="glink" id="gB2">Change email</button></div><button class="glink" id="gLk">Got a link instead of a code?</button><div id="gLkBox" class="hide"><p class="gl">In the email, press and hold the sign-in button, tap Copy Link, then paste it here. Don\'t tap the link itself.</p><input id="gLink" type="url" inputmode="url" placeholder="Paste the sign-in link" autocapitalize="off" autocomplete="off"><button class="acc big wide" id="gLkGo" style="margin-top:10px">Sign in with link</button></div></div>'+
       '<p class="gerr" id="gErr" role="alert"></p>'+
@@ -3392,16 +3392,27 @@ var CLOUD=(function(){
     $g("#gB1").onclick=function(){ step(1); };
     $g("#gB2").onclick=function(){ step(2); };
     $g("#gOff").onclick=function(){ try{ sessionStorage.setItem("t9.off","1"); }catch(e){} reveal(); setTimeout(afterAuth,700); };
+    function meta(){ return { name:(S.profile.name||"").slice(0,24), ref:(($g("#gRef")&&$g("#gRef").value)||localStorage.getItem("t9.ref")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12), tz:tz() }; }
     function send(btn){
-      var em=$g("#gMail").value.trim().toLowerCase();
+      var em=$g("#gMail").value.trim().toLowerCase(), pw=$g("#gPw").value;
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ err("Enter a valid email address."); return; }
-      gEmail=em; busy(btn,true,"Sending...");
-      sb.auth.signInWithOtp({ email:em, options:{ shouldCreateUser:true, data:{ name:(S.profile.name||"").slice(0,24), ref:(($g("#gRef")&&$g("#gRef").value)||localStorage.getItem("t9.ref")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12), tz:tz() } } }).then(function(r){
-        busy(btn,false,btn.id==="gRe"?"Send a new code":"Send my code");
-        if(r.error){ err(errText(r.error)); return; }
-        $g("#gTo").textContent=em; step(3); toast("Code sent. Check your inbox.");
-      }).catch(function(){ busy(btn,false,"Send my code"); err("Can't reach the server. Check your connection."); $g("#gOff").classList.remove("hide"); });
+      if(pw.length<6){ err("Password needs at least 6 characters."); return; }
+      gEmail=em; busy(btn,true,"Signing in...");
+      var fail=function(){ busy(btn,false,"Continue"); err("Can't reach the server. Check your connection."); $g("#gOff").classList.remove("hide"); };
+      sb.auth.signInWithPassword({ email:em, password:pw }).then(function(r){
+        if(!r.error&&r.data&&r.data.session){ SFX.complete(); onSignedIn(r.data.session.user,true); return; }
+        // no account with that password: try creating one
+        return sb.auth.signUp({ email:em, password:pw, options:{ data:meta() } }).then(function(s2){
+          busy(btn,false,"Continue");
+          if(s2.error){ err(/registered|exists/i.test(s2.error.message||"")?"Wrong password for this email. Tap Forgot password if you need a new one.":errText(s2.error)); return; }
+          if(!s2.data||!s2.data.session){ err("Account made. Check your email to confirm, then sign in."); return; }
+          SFX.complete(); toast("Welcome to Train9"); onSignedIn(s2.data.session.user,true);
+        });
+      }).catch(fail);
     }
+    $g("#gFg").onclick=function(){ var em=$g("#gMail").value.trim().toLowerCase(); if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ err("Enter your email first."); return; }
+      sb.auth.resetPasswordForEmail(em,{ redirectTo:location.origin+location.pathname }).then(function(r){ err(r.error?errText(r.error):"Reset email sent. Open it on this phone."); }); };
+    $g("#gPw").onkeydown=function(e){ if(e.key==="Enter") send($g("#gSend")); };
     $g("#gSend").onclick=function(){ send(this); };
     $g("#gMail").onkeydown=function(e){ if(e.key==="Enter") send($g("#gSend")); };
     $g("#gRe").onclick=function(){ send(this); };
@@ -3570,14 +3581,15 @@ var CLOUD=(function(){
     else { reveal(); afterAuth(); }
   }).catch(function(){ if(!offline&&!document.documentElement.classList.contains("authed")) gate(); });
   aiStatus();
-  if(sb) sb.auth.onAuthStateChange(function(ev){ if(ev==="SIGNED_OUT"){ user=null; } });
+  if(sb) sb.auth.onAuthStateChange(function(ev){ if(ev==="SIGNED_OUT"){ user=null; }
+    if(ev==="PASSWORD_RECOVERY") setTimeout(function(){ var p=prompt("Choose a new Train9 password (6+ characters)"); if(p&&p.length>=6) sb.auth.updateUser({ password:p }).then(function(r){ toast(r.error?"Could not save password":"Password updated"); }); },400); });
 
   return { queue:queue, push:push, fetchBoard:fetchBoard, fetchRefs:fetchRefs, share:share, inviteLink:inviteLink, enablePush:enablePush, testPush:testPush, pushState:pushState, setPref:setPref, signOut:signOut, deleteAccount:deleteAccount, report:report, reports:reports, setReport:setReport, claimOwner:claimOwner, isOwner:function(){ return !!(prof&&prof.is_dev); }, ai:ai, aiOn:function(){ return aiState===true; }, aiKnown:function(){ return aiState!==null; },
     user:function(){ return user; }, prof:function(){ return prof; }, board:function(){ return board; }, refs:function(){ return refs; } };
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.22-0314";
+var APP_VERSION="2026.11.23-1216";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
