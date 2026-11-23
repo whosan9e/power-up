@@ -3352,7 +3352,7 @@ var CLOUD=(function(){
   var FN=URL_+"/functions/v1/push", APP="https://whosan9e.github.io/power-up/";
   var CFG={ google:"", apple:false }; // flip on once the providers are set up
   var sb=null, user=null, prof=null, board=null, boardAt=0, refs=null, pushT=null, lastPlan="", lastStats="", gEmail="";
-  try{ if(window.supabase&&window.supabase.createClient) sb=window.supabase.createClient(URL_,KEY,{auth:{storageKey:"t9.auth",persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}); }catch(e){ sb=null; }
+  try{ if(window.supabase&&window.supabase.createClient) sb=window.supabase.createClient(URL_,KEY,{auth:{storageKey:"t9.auth",persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,flowType:"implicit"}}); }catch(e){ sb=null; }
   try{ var q=new URLSearchParams(location.search).get("ref"); if(q) localStorage.setItem("t9.ref", q.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12)); }catch(e){}
   function tz(){ try{ return Intl.DateTimeFormat().resolvedOptions().timeZone||"Australia/Sydney"; }catch(e){ return "Australia/Sydney"; } }
 
@@ -3573,10 +3573,19 @@ var CLOUD=(function(){
     var s=document.createElement("script"); s.src="https://accounts.google.com/gsi/client"; s.onload=go; document.head.appendChild(s);
   }
 
+  // sign in from an email link (reset password or magic link), in any browser
+  function linkLogin(){
+    var h=new URLSearchParams((location.hash||"").replace(/^#/,"")), q=new URLSearchParams(location.search), rec=(h.get("type")||q.get("type"))==="recovery", p;
+    if(h.get("access_token")&&h.get("refresh_token")) p=sb.auth.setSession({ access_token:h.get("access_token"), refresh_token:h.get("refresh_token") });
+    else if(q.get("token_hash")) p=sb.auth.verifyOtp({ token_hash:q.get("token_hash"), type:q.get("type")||"magiclink" });
+    else if(q.get("code")) p=sb.auth.exchangeCodeForSession(q.get("code"));
+    if(!p) return Promise.resolve(false);
+    return p.catch(function(){}).then(function(){ try{ history.replaceState(null,"",location.pathname); }catch(e){} return rec; });
+  }
   // ----- boot -----
   var offline=false; try{ offline=sessionStorage.getItem("t9.off")==="1"; }catch(e){}
   if(!sb){ if(!offline) gate(); }
-  else sb.auth.getSession().then(function(r){
+  else linkLogin().then(function(rec){ if(rec) setTimeout(function(){ var p=prompt("You're signed in. Choose a new Train9 password (6+ characters)"); if(p&&p.length>=6) sb.auth.updateUser({ password:p }).then(function(x){ toast(x.error?"Could not save password":"Password saved"); }); },2600); return sb.auth.getSession(); }).then(function(r){
     var s=r.data&&r.data.session;
     if(s) onSignedIn(s.user,false);
     else if(!offline){ document.documentElement.classList.remove("authed"); gate(); }
@@ -3591,7 +3600,7 @@ var CLOUD=(function(){
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.23-1220";
+var APP_VERSION="2026.11.23-1230";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
