@@ -754,7 +754,7 @@ input[type=checkbox],input[type=radio]{-webkit-appearance:auto;appearance:auto;w
   <button role="tab" data-v="ranked"><svg viewBox="0 0 24 24"><path d="M12 2l8 5v10l-8 5-8-5V7z"/><path d="M12 8l3 4-3 4-3-4z"/></svg>Ranked</button>
   <button role="tab" data-v="coach"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.8 7L4 20l1.1-4.6A8 8 0 1 1 21 12z"/></svg>Coach</button>
 </nav>
-<script src="vendor/supabase.js"></script>
+<script>setTimeout(function(){var L=document.getElementById("loader");if(!L)return;L.style.transition="opacity .3s";L.style.opacity="0";var r=document.documentElement;r.classList.add("revealed");setTimeout(function(){if(L.parentNode)L.remove();r.classList.remove("booting");},320);},9000);</script><script src="vendor/supabase.js"></script>
 <script>
 var V2 = {
   A: { name: "Week A", days: [
@@ -3302,6 +3302,7 @@ function focusLabel(id,sx,adult){ var r=focusList(sx,adult).find(function(f){ re
 function toggleFocus(arr,k){ var i=arr.indexOf(k); if(i>=0) arr.splice(i,1); else { if(arr.length>=FOCUS_MAX) arr.shift(); arr.push(k); } return arr; }
 function dayRegion(d){ var lo=0, up=0; d.ex.forEach(function(e){ var m=muscleOf(e.n); if(/glutes|quads|hamstrings|calves/.test(m)) lo++; else if(/chest|back|shoulders|biceps|triceps|forearms/.test(m)) up++; }); return lo>up?"lower":up>lo?"upper":"mixed"; }
 function applyFocus(days){
+  if(typeof FOCUS_EX==="undefined"||!FOCUS_EX) return days; // first render runs before this file loads
   // each focus lands on 2 or 3 training days (about 6 to 9 extra hard sets a week), spread across the week
   var fs=(S.profile.focus||[]).filter(function(k){ return FOCUS_EX[k]; }).slice(0,FOCUS_MAX);
   if(!fs.length) return days;
@@ -3600,7 +3601,7 @@ var CLOUD=(function(){
 })();
 
 // ---------- Instant updates ----------
-var APP_VERSION="2026.11.23-1230";
+var APP_VERSION="2026.11.24-1821";
 var UPD=(function(){
   var reg=null, busy=false;
   function reloadOnce(v){ try{ if(sessionStorage.getItem("t9reload")===v) return; sessionStorage.setItem("t9reload",v); }catch(e){} location.reload(); }
